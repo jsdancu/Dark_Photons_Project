@@ -1,0 +1,1 @@
+main48 DECAY_2010.DEC evt.pdl $PYTHIA8DATA true >mymain48.log

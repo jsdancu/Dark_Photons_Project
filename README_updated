@@ -1,0 +1,70 @@
+# 06Feb2015 NKW.
+# Updated Makefile and Makefile.inc after reinstalling Pythia8 to support
+# HEPMC2 file formats, for use with Delphes.
+
+'#' is a comment character in shell script
+
+# log on to eprexa  or eprexb
+# get the right flavour of linux
+sl6  
+#
+# First time only - copy the example directory
+cp -pr /home/nkw/gs2015/pythia_example .
+#
+cd pythia_example
+
+# now in case you are confussed
+pwd  # 'print working directory' i.e. which directory you are in
+# now might be time to open e.g. http://ss64.com/bash/ in your browser
+
+#
+# set up path to pythia libraries and root version
+#
+source setup_env.sh
+
+#
+# edit example code using emacs editor
+#
+emacs gs_ex1.cc &     # the '&' leaves the shell open to other commands
+# don't forget to save the file after editing!
+
+#
+# build or 'make'(uisng a Makefile) the executable ex1.exe
+#
+make
+
+#
+# run the executable - generate events and fill histograms
+#
+./ex1.exe >& run.out &
+
+# Output 
+# Let's see what appeared
+ls -lrt # long reverse time order
+
+# look at the output file using 'less' - "less is more"
+less run.out # G for start of file, shift G to end, Q to quit (or use emacs!)
+#
+# hopefully a file called ex1.root was produced which contains root histograms
+
+#
+# Plot the histograms from the file using root
+#
+# root -b -q Plot.C
+
+# hopefully it made some .eps .png and a .pdf file files
+# To view the eps files use 'ghostview' or gv for short
+gv ptcharged.eps &
+
+# or use 
+
+# eps is a strange format but ideal for putting in latex documents!
+# Most likely you can use pdflatex and incorporate the pdf or png 
+
+# then work out how to scp or use browser email to copy your output somewhere else
+
+# other examples 
+ls $PYTHIA8/examples/
+# try grep or look at the Pythia manual online
+grep -i 'higgs' $PYTHIA8/examples/main*.cc
+grep -i 'susy' $PYTHIA8/examples/main*.cc

@@ -177,7 +177,7 @@ int main() {
 
 		for (Long64_t i = 0; i < n; ++i) {
 std::cout<< "here 1: " << i << std::endl;
-			if(i==x){
+			/*if(i==x){
 std::cout<< "here 2" <<std::endl;
 				pythia1.event.reset(); 
 std::cout<< "here 3" <<std::endl;
@@ -211,7 +211,7 @@ std::cout<< "here 8" <<std::endl;
 				}
 std::cout<< "here 9" <<std::endl;
 			}
-			else{
+			else{*/
 
 				double m = pythia0.event[v[i]].daughterList().size();
 				for (Long64_t j = 0; j < m; ++j) {
@@ -233,7 +233,7 @@ std::cout<< "here 9" <<std::endl;
 
 				}
 
-			}
+			//}
 
 		}
 

@@ -1,5 +1,5 @@
 //26/10/2017
-//Program reading in the tree generated in gs_project2.cc and performing analysis on the reconstructed invariant mass
+//Program reading in the tree generated in gs_project3.cc and performing analysis on the reconstructed invariant mass
 //credits to Phil for the reading the tree from file part
 //credits to Nigel for analysis procedure suggestions
 #include "treeio.h"

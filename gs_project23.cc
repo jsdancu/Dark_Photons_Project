@@ -74,16 +74,15 @@ int main() {
 	//Create event
 	Event *event = &pythia0.event;
 	Event *event1 = &pythia1.event;
-/*
+
 	//Define a histograms into which we accumulate the invariant mass distribution for muon combinations
- 
-    	TH1F *eta_invmass = new TH1F("eta_invmass","Reconstructed eta invariant mass from muon pairs", 300, 0.0, 30.0);
+    	TH1D *eta_invmass = new TH1D("eta_invmass","Reconstructed eta invariant mass from muon pairs", 100, 0.0, 10.0);
     	eta_invmass -> GetXaxis()-> SetTitle("m (GeV)");
 
-	TH1F *mu_number_event = new TH1F("mu_number_event","Muon-antimuon number per event", 10, 0.0, 10.0);
+	TH1D *mu_number_event = new TH1D("mu_number_event","Muon-antimuon number per event without #eta-> #mu^{+} #mu^{-}", 10, 0.0, 10.0);
     	mu_number_event -> GetXaxis()-> SetTitle("event index");
 	mu_number_event -> GetYaxis()-> SetTitle("number of #mu^{#pm}");
-*/
+
 	//Create TTree for etas
 	TTree *T1 = new TTree("T1","ev1 Tree");
 
@@ -122,9 +121,6 @@ int main() {
 	double inv_mass;
 	const int nPrint=5;
 
-	Long64_t total_final_state = 0;
-	Long64_t total_mu_antimu = 0;
-
 	std::vector<int> v;
 
 	// Begin event loop. Generate event; skip if generation aborted.
@@ -137,11 +133,12 @@ int main() {
 		//if (iEvent < nPrint) {pythia0.info.list(); pythia0.event.list();}
 
 		Long64_t eta_number = 0;
-		//Long64_t mu_number = 0;
-		//Long64_t antimu_number = 0;
+		Long64_t mu_antimu_number = 0;
 
 		//Loop over all particles that have been generated in this event
 		for (Long64_t i = 0; i < pythia0.event.size(); ++i) {	
+
+			if ((pythia0.event[i].id() == 13) || (pythia0.event[i].id() == -13)){mu_antimu_number++;}
 
 			//check if particle is eta
 			if (pythia0.event[i].id() == 221){
@@ -169,6 +166,8 @@ int main() {
 
 		}
 
+		mu_number_event -> SetBinContent(iEvent, mu_antimu_number);//filling the mu-antimu/event histogram;
+
 		TRandom2 *rndm=new TRandom2(0);
 		int n = v.size();
 		int x = (int) rndm->Uniform(n);
@@ -176,42 +175,56 @@ int main() {
 		std::cout<< "random number: " << x << std::endl;
 
 		for (Long64_t i = 0; i < n; ++i) {
-std::cout<< "here 1: " << i << std::endl;
-			/*if(i==x){
-std::cout<< "here 2" <<std::endl;
+
+			if(i==x){
+
 				pythia1.event.reset(); 
-std::cout<< "here 3" <<std::endl;
-				std::cout<<pythia1.event.append(pythia0.event.at(v.at(x)))<<std::endl; 
-std::cout<< "here 4 "<<std::endl;
+				pythia1.event.append(pythia0.event[v[x]].id(), 23, 0, 0, 0, 0, 0, 0, pythia0.event[v[x]].p(), pythia0.event[v[x]].m()); 
+
 				//Generate one event. Skip if error.
-				//if (!pythia1.next()) continue;
-				pythia1.next();
+				if (!pythia1.next()) continue;
 
 				if (i < 2) {pythia1.info.list(); pythia1.event.list();}
-std::cout<< "here 5" <<std::endl;
-std::cout<< "Event size " << pythia1.event.size() <<std::endl;
+
+				Double_t E = 0.0;
+				Double_t px = 0.0;
+				Double_t py = 0.0;
+				Double_t pz = 0.0;
+
 				for (Long64_t j = 0; j < pythia1.event.size(); ++j) {
-std::cout<< "here 6" <<std::endl;
-					//adding eta products to T2
-					index_var = iEvent;
-					id_var = pythia1.event[j].id();
-std::cout<< "id_var" << id_var <<std::endl;
-					energy_var = pythia1.event[j].e();
-					mass_var = pythia1.event[j].m();
-					px_var = pythia1.event[j].px();
-					py_var = pythia1.event[j].py();
-					pz_var = pythia1.event[j].pz();
-					mother1_var = pythia1.event[j].mother1();
-					mother2_var = pythia1.event[j].mother2();
-					motherid1_var = pythia1.event[pythia1.event[j].mother1()].id();
-					motherid2_var = pythia1.event[pythia1.event[j].mother2()].id();
-std::cout<< "here 7" <<std::endl;
-					T2->Fill();
-std::cout<< "here 8" <<std::endl;
+
+					if(pythia1.event[j].isFinal()){
+
+						//adding eta products to T2
+						index_var = iEvent;
+						id_var = pythia1.event[j].id();
+//std::cout<< "id_var" << id_var <<std::endl;
+						energy_var = pythia1.event[j].e();
+						mass_var = pythia1.event[j].m();
+						px_var = pythia1.event[j].px();
+						py_var = pythia1.event[j].py();
+						pz_var = pythia1.event[j].pz();
+						mother1_var = pythia1.event[j].mother1();
+						mother2_var = pythia1.event[j].mother2();
+						motherid1_var = pythia1.event[pythia1.event[j].mother1()].id();
+						motherid2_var = pythia1.event[pythia1.event[j].mother2()].id();
+
+						T2->Fill();
+
+						E = E + energy_var;
+						px = px + px_var;
+						py = py + py_var;
+						pz = pz + pz_var;
+
+					}
+
 				}
-std::cout<< "here 9" <<std::endl;
+
+				Double_t inv_mass = sqrt(pow(E, 2)- pow(px, 2) - pow(py, 2) - pow(pz, 2));
+				eta_invmass -> Fill(inv_mass);
+
 			}
-			else{*/
+			else{
 
 				double m = pythia0.event[v[i]].daughterList().size();
 				for (Long64_t j = 0; j < m; ++j) {
@@ -233,7 +246,7 @@ std::cout<< "here 9" <<std::endl;
 
 				}
 
-			//}
+			}
 
 		}
 

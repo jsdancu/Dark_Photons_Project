@@ -22,11 +22,7 @@ struct vect{
 
 double invmass(vect *v, Long64_t i, Long64_t j){
 
-	//std::cout<<"i = "<<i<<"    "<<"j = "<<j<<"    "<< "energy i = "<<v->energy[i]<<"    "<<"energy j = "<<v->energy[j]<<std::endl;
-
 	double inv_mass=sqrt(pow(v->energy[i]+v->energy[j],2)-pow(v->px[i]+v->px[j],2)-pow(v->py[i]+v->py[j],2)-pow(v->pz[i]+v->pz[j],2));
-
-	//std::cout<<"invariant mass = "<<setprecision(15)<<inv_mass<<std::endl;
 
 	return inv_mass;
 
@@ -48,7 +44,15 @@ double pt(vect *v, Long64_t i){
 
 }
 
-void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *eta_invmass_mothers, TH1D *muon_pt_mother, TH1D *muon_ptcut_mother, TH1D *mu_number_event){
+double eta(vect *v, Long64_t i){
+
+	double eta=0.5 * log((p(v, i) + abs(v->pz[i])) / (p(v, i) - abs(v->pz[i])));
+
+	return eta;
+
+}
+
+void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *eta_invmass_mothers, TH1D *muon_pt_mother, TH1D *muon_pt_bkg, TH1D *muon_ptcut_mother, TH1D *muon_ptetacut_mother, TH1D *muon_p_mother, TH1D *muon_p_bkg, TH1D *muon_pcut_mother, TH1D *muon_petacut_mother, TH1D *muon_eta_mother, TH1D *mu_number_event){
 
 	double inv_mass;
 
@@ -76,8 +80,6 @@ void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *
 						++antimu_number;
 					}
 
-//std::cout<<"i = "<<i<<"    "<<"j = "<<j<<"    "<< "energy i = "<<v->energy[i]<<"    "<<"energy j = "<<v->energy[j]<<std::endl;
-
 					//Reconstructing invariant mass of all muon-anti-muon combinations
 					inv_mass = invmass(v, i, j);
 
@@ -100,22 +102,51 @@ void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *
 							muon_pt_mother->Fill(pt_mother2);
 
 							double p_mother1 = p(v, i);
-							//muon_p_mother->Fill(p_mother1);
-
-							if((pt_mother1>0.5) && (p_mother1>10.0))
-							{
-							muon_ptcut_mother->Fill(pt_mother1);
-							}
+							muon_p_mother->Fill(p_mother1);
 
 							double p_mother2 = p(v, j);
-							//muon_p_mother->Fill(p_mother2);
+							muon_p_mother->Fill(p_mother2);
 
-							if((pt_mother2>0.5) && (p_mother2>10.0))
+							double eta_mother1 = eta(v, i);
+							muon_eta_mother->Fill(eta_mother1);
+
+							double eta_mother2 = eta(v, j);
+							muon_eta_mother->Fill(eta_mother2);
+
+							if((pt_mother1>0.5) && (p_mother1>10.0) && (pt_mother2>0.5) && (p_mother2>10.0))
 							{
-							muon_ptcut_mother->Fill(pt_mother2);
+
+								muon_ptcut_mother->Fill(pt_mother1);
+								muon_ptcut_mother->Fill(pt_mother2);
+								muon_pcut_mother->Fill(p_mother1);
+								muon_pcut_mother->Fill(p_mother2);
+
+								if((eta_mother1>2.0) && (eta_mother1<4.5) && (eta_mother2>2.0) && (eta_mother2<4.5))
+								{
+									muon_ptetacut_mother->Fill(pt_mother1);
+									muon_ptetacut_mother->Fill(pt_mother2);
+									muon_petacut_mother->Fill(p_mother1);
+									muon_petacut_mother->Fill(p_mother2);
+								}
+
 							}
 
 						}
+
+					}
+					else if(v->mother1[i] != v->mother1[j]){
+
+						double pt_bkg1 = pt(v, i);
+						muon_pt_bkg->Fill(pt_bkg1);
+
+						double pt_bkg2 = pt(v, j);
+						muon_pt_bkg->Fill(pt_bkg2);
+
+						double p_bkg1 = p(v, i);
+						muon_p_bkg->Fill(p_bkg1);
+
+						double p_bkg2 = p(v, j);
+						muon_p_bkg->Fill(p_bkg2);
 
 					}
 
@@ -192,11 +223,30 @@ int main() {
 
 	TH1D *muon_pt_mother = new TH1D("muon_pt_mother","#mu^{-} and #mu^{+} p_{t} distribution with same mother (#eta)", 500, 0.0, 5.0);
     	muon_pt_mother -> GetXaxis()-> SetTitle("p_{t} (GeV)");
-	//muon_pt_mother -> GetYaxis()-> SetLog();
 
-	TH1D *muon_ptcut_mother = new TH1D("muon_ptcut_mother","#mu^{-} and #mu^{+} p_{t} distribution after cuts (with same mother (#eta))", 300, 0.0, 3.0);
+	TH1D *muon_pt_bkg = new TH1D("muon_pt_bkg","#mu^{-} and #mu^{+} p_{t} distribution for background", 500, 0.0, 5.0);
+    	muon_pt_bkg -> GetXaxis()-> SetTitle("p_{t} (GeV)");
+
+	TH1D *muon_ptcut_mother = new TH1D("muon_ptcut_mother","#mu^{-} and #mu^{+} p_{t} distribution after cuts (with same mother (#eta))", 500, 0.0, 5.0);
     	muon_ptcut_mother -> GetXaxis()-> SetTitle("p_{t} (GeV)");
-	//muon_ptcut_mother -> GetYaxis()-> SetLog();
+
+	TH1D *muon_ptetacut_mother = new TH1D("muon_ptetacut_mother","#mu^{-} and #mu^{+} p_{t} distribution after cuts including pseudorapidity (with same mother (#eta))", 500, 0.0, 5.0);
+    	muon_ptetacut_mother -> GetXaxis()-> SetTitle("p_{t} (GeV)");
+
+	TH1D *muon_p_mother = new TH1D("muon_p_mother","#mu^{-} and #mu^{+} p distribution with same mother (#eta)", 10000, 0.0, 100.0);
+    	muon_p_mother -> GetXaxis()-> SetTitle("p (GeV)");
+
+	TH1D *muon_p_bkg = new TH1D("muon_p_bkg","#mu^{-} and #mu^{+} p distribution for background", 10000, 0.0, 100.0);
+    	muon_p_bkg -> GetXaxis()-> SetTitle("p (GeV)");
+
+	TH1D *muon_pcut_mother = new TH1D("muon_pcut_mother","#mu^{-} and #mu^{+} p distribution after cuts (with same mother (#eta))", 10000, 0.0, 100.0);
+    	muon_pcut_mother -> GetXaxis()-> SetTitle("p (GeV)");
+
+	TH1D *muon_petacut_mother = new TH1D("muon_petacut_mother","#mu^{-} and #mu^{+} p distribution after cuts including pseudorapidity (with same mother (#eta))", 10000, 0.0, 100.0);
+    	muon_petacut_mother -> GetXaxis()-> SetTitle("p (GeV)");
+
+	TH1D *muon_eta_mother = new TH1D("muon_eta_mother","#mu^{-} and #mu^{+} pseudorapidity distribution with same mother (#eta)", 45, 0.0, 4.5);
+    	muon_eta_mother -> GetXaxis()-> SetTitle("#eta");
 
 	TH1D *mu_number_event = new TH1D("mu_number_event","Muon-antimuon number per event", 100000, 0.0, 100000.0);
     	mu_number_event -> GetXaxis()-> SetTitle("event index");
@@ -228,7 +278,7 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 			v->motherid1.push_back(motherid1_var);
 			v->motherid2.push_back(motherid2_var);
 
-			analyze_event(v, eta_invmass, muon_invmass_mother, eta_invmass_mother, muon_pt_mother, muon_ptcut_mother, mu_number_event);
+			analyze_event(v, eta_invmass, muon_invmass_mother, eta_invmass_mother, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_eta_mother, mu_number_event);
 
 			//clear vector
 			v->index.clear();
@@ -248,7 +298,7 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 		//checks if the new entry is from the same event as the previous one
 		else if(prev_index!=index_var){
 
-			analyze_event(v, eta_invmass, muon_invmass_mother, eta_invmass_mother, muon_pt_mother, muon_ptcut_mother, mu_number_event);
+			analyze_event(v, eta_invmass, muon_invmass_mother, eta_invmass_mother, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_eta_mother, mu_number_event);
 
 			//clear vector
 			v->index.clear();
@@ -300,18 +350,59 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
     
 	TCanvas *c1=new TCanvas("c1","",600,600);
 
-	//c1->SetLogy();
 	muon_pt_mother->Draw();
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project42_mu_pt_mother1.pdf","pdf");
 
+	muon_pt_bkg->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_pt_bkg1.pdf","pdf");
+
 	muon_ptcut_mother->Draw();
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project42_mu_ptcut_mother1.pdf","pdf");
+
+	muon_ptetacut_mother->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_ptetacut_mother1.pdf","pdf");
+
+	muon_p_mother->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_p_mother1.pdf","pdf");
+
+	muon_p_bkg->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_p_bkg1.pdf","pdf");
+
+	muon_pcut_mother->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_pcut_mother1.pdf","pdf");
+
+	muon_petacut_mother->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_petacut_mother1.pdf","pdf");
+
+	muon_eta_mother->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_pseudorap_mother1.pdf","pdf");
 
 	mu_number_event->Draw();
 
@@ -339,27 +430,81 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	c1->Update();
 	c1->Print("project42_etainvmass_mother1.pdf","pdf");
 
+	muon_pt_mother->SetFillColor(kBlue);
+	muon_pt_mother->SetLineColor(kBlue);
+	muon_pt_mother->SetFillStyle(1001);
 	muon_pt_mother->Draw();
+	muon_ptcut_mother->SetFillColor(kGreen);
+	muon_ptcut_mother->SetLineColor(kGreen);
+	muon_ptcut_mother->SetFillStyle(1001);
 	muon_ptcut_mother->Draw("same");
+	muon_ptetacut_mother->SetFillColor(kRed);
+	muon_ptetacut_mother->SetLineColor(kRed);
+	muon_ptetacut_mother->SetFillStyle(1001);
+	muon_ptetacut_mother->Draw("same");
+	muon_pt_bkg->SetFillColor(kYellow);
+	muon_pt_bkg->SetLineColor(kYellow);
+	muon_pt_bkg->SetFillStyle(1001);
+	muon_pt_bkg->Draw("same");
 
-	TLegend *legend2 = new TLegend(0.7,0.5,0.9,0.7);
+	TLegend *legend2 = new TLegend(0.5,0.5,0.9,0.7);
 	TLegendEntry *leg3 = legend2->AddEntry("muon_pt_mother","P_t distribution before cuts","f");
   	leg3->SetFillColor(kBlue);	
 	TLegendEntry *leg4 = legend2->AddEntry("muon_ptcut_mother","P_t distribution after cuts","f");
   	leg4->SetFillColor(kGreen);
+	TLegendEntry *leg41 = legend2->AddEntry("muon_ptetacut_mother","P_t distribution after cuts including pseudorapidity","f");
+  	leg41->SetFillColor(kRed);
+	TLegendEntry *leg42 = legend2->AddEntry("muon_pt_bkg","P_t distribution for background","f");
+  	leg42->SetFillColor(kYellow);
 	legend2->Draw("same");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project42_mu_pt_mother12.pdf","pdf");
 
+	muon_p_mother->SetFillColor(kBlue);
+	muon_p_mother->SetLineColor(kBlue);
+	muon_p_mother->SetFillStyle(1001);
+	muon_p_mother->Draw();
+	muon_pcut_mother->SetFillColor(kGreen);
+	muon_pcut_mother->SetLineColor(kGreen);
+	muon_pcut_mother->SetFillStyle(1001);
+	muon_pcut_mother->Draw("same");
+	muon_petacut_mother->SetFillColor(kRed);
+	muon_petacut_mother->SetLineColor(kRed);
+	muon_petacut_mother->SetFillStyle(1001);
+	muon_petacut_mother->Draw("same");
+	muon_p_bkg->SetFillColor(kYellow);
+	muon_p_bkg->SetLineColor(kYellow);
+	muon_p_bkg->SetFillStyle(1001);
+	muon_p_bkg->Draw("same");
+
+	TLegend *legend3 = new TLegend(0.5,0.5,0.9,0.7);
+	TLegendEntry *leg5 = legend3->AddEntry("muon_p_mother","p distribution before cuts","f");
+  	leg3->SetFillColor(kBlue);	
+	TLegendEntry *leg6 = legend3->AddEntry("muon_pcut_mother","p distribution after cuts","f");
+  	leg6->SetFillColor(kGreen);
+	TLegendEntry *leg61 = legend3->AddEntry("muon_petacut_mother","p distribution after cuts including pseudorapidity","f");
+  	leg61->SetFillColor(kRed);
+	TLegendEntry *leg62 = legend3->AddEntry("muon_p_bkg","p distribution for background","f");
+  	leg62->SetFillColor(kYellow);
+	legend3->Draw("same");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project42_mu_p_mother12.pdf","pdf");
+
+	eta_invmass->SetFillColor(kBlue);
+	eta_invmass->SetFillStyle(1001);
 	eta_invmass->Draw();
+	eta_invmass_mother->SetFillColor(kGreen);
+	eta_invmass_mother->SetFillStyle(1001);
 	eta_invmass_mother->Draw("same");
 
 	TLegend *legend1 = new TLegend(0.7,0.5,0.9,0.7);
 	TLegendEntry *leg1 = legend1->AddEntry("eta_invmass","#eta invariant mass (sig+bkg)","f");
   	leg1->SetFillColor(kBlue);	
-	TLegendEntry *leg2 = legend2->AddEntry("eta_invmass_mother","#eta invariant mass (sig)","f");
+	TLegendEntry *leg2 = legend1->AddEntry("eta_invmass_mother","#eta invariant mass (sig)","f");
   	leg2->SetFillColor(kGreen);
 	legend1->Draw("same");
 

@@ -96,8 +96,10 @@ void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *
 							muon_pt_mother->Fill(pt_mother2);
 
 							double p_mother1 = p(v, i);
+							double p_mother2 = p(v, j);
 							//muon_p_mother->Fill(p_mother1);
 
+							/*
 							if((pt_mother1>0.5) && (p_mother1>10.0))
 							{
 							muon_ptcut_mother->Fill(pt_mother1);
@@ -108,6 +110,12 @@ void analyze_event(vect *v, TH1D *eta_invmass, TH1D *muon_invmass_mother, TH1D *
 
 							if((pt_mother2>0.5) && (p_mother2>10.0))
 							{
+							muon_ptcut_mother->Fill(pt_mother2);
+							}*/
+
+							if((pt_mother1>0.5) && (p_mother1>10.0) && (pt_mother2>0.5) && (p_mother2>10.0))
+							{
+							muon_ptcut_mother->Fill(pt_mother1);
 							muon_ptcut_mother->Fill(pt_mother2);
 							}
 

@@ -2,6 +2,7 @@
 //Program inspired by gs_project33.cc 
 //This code: -sets up LHC environment (pp collision, 13 TeV CM energy) and soft QCD interactions;
 //		-saves some features of all the etas and its decay products into two separate trees;
+//		-saves muons and photons from other processes in the decay products tree;
 //		-restricts decays for eta: eta->gamma mu anti-mu for the second instance of pythia
 //		-tries to reconstruct invariant mass of eta from decay products by pairing up the decay particles
 
@@ -143,8 +144,45 @@ int main() {
 		//Loop over all particles that have been generated in this event
 		for (Long64_t i = 0; i < pythia0.event.size(); ++i) {	
 
-			if ((pythia0.event[i].id() == 13) || (pythia0.event[i].id() == -13)){mu_antimu_number++;}
-			if (pythia0.event[i].id() == 22){gamma_number++;}
+			if(pythia0.event[i].isFinal() && ((pythia0.event[i].id() == 13) || (pythia0.event[i].id() == -13))){
+
+				mu_antimu_number++;
+
+				index_var = iEvent;
+				id_var = pythia0.event[i].id();
+				energy_var = pythia0.event[i].e();
+				mass_var = pythia0.event[i].m();
+				px_var = pythia0.event[i].px();
+				py_var = pythia0.event[i].py();
+				pz_var = pythia0.event[i].pz();
+				mother1_var = pythia0.event[i].mother1();
+				mother2_var = pythia0.event[i].mother2();
+				motherid1_var = pythia0.event[pythia0.event[i].mother1()].id();
+				motherid2_var = pythia0.event[pythia0.event[i].mother2()].id();
+
+				T2->Fill();
+
+			}
+
+			if (pythia0.event[i].id() == 22){
+
+				gamma_number++;
+
+				index_var = iEvent;
+				id_var = pythia0.event[i].id();
+				energy_var = pythia0.event[i].e();
+				mass_var = pythia0.event[i].m();
+				px_var = pythia0.event[i].px();
+				py_var = pythia0.event[i].py();
+				pz_var = pythia0.event[i].pz();
+				mother1_var = pythia0.event[i].mother1();
+				mother2_var = pythia0.event[i].mother2();
+				motherid1_var = pythia0.event[pythia0.event[i].mother1()].id();
+				motherid2_var = pythia0.event[pythia0.event[i].mother2()].id();
+
+				T2->Fill();
+
+			}
 
 			//check if particle is eta
 			if (pythia0.event[i].id() == 221){

@@ -215,7 +215,7 @@ int main() {
 	TH1D *eta_invmass = new TH1D("eta_invmass","Reconstructed eta invariant mass from muon pairs", 300, 0.0, 30.0);
     	eta_invmass -> GetXaxis()-> SetTitle("m (GeV)");
 
-	TH1D *muon_invmass_mother = new TH1D("muon_invmass_mother","Reconstructed muon pair invariant mass with same mother", 100, 0.0, 1.0);
+	TH1D *muon_invmass_mother = new TH1D("muon_invmass_mother","Reconstructed muon pair invariant mass with same mother", 3000, 0.0, 30.0);
     	muon_invmass_mother -> GetXaxis()-> SetTitle("m (GeV)");
 
 	TH1D *eta_invmass_mother = new TH1D("eta_invmass_mother","Reconstructed eta invariant mass from muon pairs with same mother", 100, 0.0, 1.0);
@@ -434,6 +434,10 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	muon_pt_mother->SetLineColor(kBlue);
 	muon_pt_mother->SetFillStyle(1001);
 	muon_pt_mother->Draw();
+	muon_pt_bkg->SetFillColor(kYellow);
+	muon_pt_bkg->SetLineColor(kYellow);
+	muon_pt_bkg->SetFillStyle(1001);
+	muon_pt_bkg->Draw("same");
 	muon_ptcut_mother->SetFillColor(kGreen);
 	muon_ptcut_mother->SetLineColor(kGreen);
 	muon_ptcut_mother->SetFillStyle(1001);
@@ -442,20 +446,16 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	muon_ptetacut_mother->SetLineColor(kRed);
 	muon_ptetacut_mother->SetFillStyle(1001);
 	muon_ptetacut_mother->Draw("same");
-	muon_pt_bkg->SetFillColor(kYellow);
-	muon_pt_bkg->SetLineColor(kYellow);
-	muon_pt_bkg->SetFillStyle(1001);
-	muon_pt_bkg->Draw("same");
 
 	TLegend *legend2 = new TLegend(0.5,0.5,0.9,0.7);
 	TLegendEntry *leg3 = legend2->AddEntry("muon_pt_mother","P_t distribution before cuts","f");
   	leg3->SetFillColor(kBlue);	
+	TLegendEntry *leg42 = legend2->AddEntry("muon_pt_bkg","P_t distribution for background","f");
+  	leg42->SetFillColor(kYellow);
 	TLegendEntry *leg4 = legend2->AddEntry("muon_ptcut_mother","P_t distribution after cuts","f");
   	leg4->SetFillColor(kGreen);
 	TLegendEntry *leg41 = legend2->AddEntry("muon_ptetacut_mother","P_t distribution after cuts including pseudorapidity","f");
   	leg41->SetFillColor(kRed);
-	TLegendEntry *leg42 = legend2->AddEntry("muon_pt_bkg","P_t distribution for background","f");
-  	leg42->SetFillColor(kYellow);
 	legend2->Draw("same");
 
 	c1->Modified();
@@ -466,6 +466,10 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	muon_p_mother->SetLineColor(kBlue);
 	muon_p_mother->SetFillStyle(1001);
 	muon_p_mother->Draw();
+	muon_p_bkg->SetFillColor(kYellow);
+	muon_p_bkg->SetLineColor(kYellow);
+	muon_p_bkg->SetFillStyle(1001);
+	muon_p_bkg->Draw("same");
 	muon_pcut_mother->SetFillColor(kGreen);
 	muon_pcut_mother->SetLineColor(kGreen);
 	muon_pcut_mother->SetFillStyle(1001);
@@ -474,20 +478,16 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	muon_petacut_mother->SetLineColor(kRed);
 	muon_petacut_mother->SetFillStyle(1001);
 	muon_petacut_mother->Draw("same");
-	muon_p_bkg->SetFillColor(kYellow);
-	muon_p_bkg->SetLineColor(kYellow);
-	muon_p_bkg->SetFillStyle(1001);
-	muon_p_bkg->Draw("same");
 
 	TLegend *legend3 = new TLegend(0.5,0.5,0.9,0.7);
 	TLegendEntry *leg5 = legend3->AddEntry("muon_p_mother","p distribution before cuts","f");
   	leg3->SetFillColor(kBlue);	
+	TLegendEntry *leg62 = legend3->AddEntry("muon_p_bkg","p distribution for background","f");
+  	leg62->SetFillColor(kYellow);
 	TLegendEntry *leg6 = legend3->AddEntry("muon_pcut_mother","p distribution after cuts","f");
   	leg6->SetFillColor(kGreen);
 	TLegendEntry *leg61 = legend3->AddEntry("muon_petacut_mother","p distribution after cuts including pseudorapidity","f");
   	leg61->SetFillColor(kRed);
-	TLegendEntry *leg62 = legend3->AddEntry("muon_p_bkg","p distribution for background","f");
-  	leg62->SetFillColor(kYellow);
 	legend3->Draw("same");
 
 	c1->Modified();

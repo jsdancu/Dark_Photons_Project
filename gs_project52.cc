@@ -412,8 +412,6 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	c1->Update();
 	c1->Print("project52_mu_pt_mother.pdf","pdf");
 
-	muon_ptcut_mother->Draw();
-
 	muon_pt_bkg->Draw();
 
 	c1->Modified();

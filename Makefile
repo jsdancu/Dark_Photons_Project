@@ -136,7 +136,7 @@ endif
 #NKW
 gs%: $$@.cc $(PREFIX_LIB)/libpythia8.a
 ifeq ($(ROOT_USE),true)
-	$(CXX) $^ -o $@ -w -I$(ROOT_INCLUDE) -I$(HEPMC2_INCLUDE) $(CXX_COMMON) \
+	$(CXX) $^ -o $@ -g -w -I$(ROOT_INCLUDE) -I$(HEPMC2_INCLUDE) $(CXX_COMMON) \
 	-L$(HEPMC2_LIB) -Wl,-rpath $(HEPMC2_LIB) -lHepMC \
 	 `$(ROOTBIN)root-config --cflags`\
 	 -Wl,-rpath $(ROOT_LIB) `$(ROOT_BIN)/root-config --glibs`

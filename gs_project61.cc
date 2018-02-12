@@ -8,14 +8,23 @@
 
 // Header file to access Pythia 8 program elements.
 #include "Pythia8/Pythia.h"
-#include "TH1.h"
-#include "TTree.h"
-#include "TFile.h"
-#include "TRandom2.h"
 #include "Pythia8/SigmaHiggs.h"
 #include "cmath"
 #include "Pythia8Plugins/HepMC2.h"
 #include <vector>
+
+#include "TH1.h"
+#include "TH2.h"
+#include "TTree.h"
+#include "TGraph.h"
+#include "TMultiGraph.h"
+#include "TGraphAsymmErrors.h"
+#include "TVectorD.h"
+#include "TFile.h"
+#include "TCanvas.h"
+#include "TLegend.h"
+#include "TLegendEntry.h"
+#include "TRandom2.h"
 
 using namespace Pythia8;
 
@@ -36,28 +45,161 @@ double misEnergy(double p2){
 
 double lepton_width(double m_A, double m_l, double epsilon2){
 
-	double alpha_EM = 1/137;
+	double alpha_EM = 1.0/137.0;
+	/*HepMC::Pythia8ToHepMC ToHepMC;
+	Pythia pythia;
+	CoupSM& coup = pythia.CoupSM;
 
-	double gamma_l = epsilon2 * alpha_EM /3.0 * m_A * (1.0 + 2.0 * pow(m_l, 2.0) / pow(m_A, 2.0)) * sqrt(1.0 - 4.0 * pow(m_l, 2.0) / pow(m_A, 2.0));
+	pythia.init(); 
+	
+	double alpha_EM = coup.alphaEM(pow(m_A, 2.0));*/
 
-	return gamma_l;
+	double Gamma_l = epsilon2 * alpha_EM /3.0 * m_A * (1.0 + 2.0 * pow(m_l, 2.0) / pow(m_A, 2.0)) * sqrt(1.0 - 4.0 * pow(m_l, 2.0) / pow(m_A, 2.0));
+
+	return Gamma_l;
+
+}
+
+double lepton_width1(double m_A, double m_l){
+
+	/*HepMC::Pythia8ToHepMC ToHepMC;
+	Pythia pythia;
+	CoupSM& coup = pythia.CoupSM;
+
+	pythia.init(); 
+	double alpha_EM = coup.alphaEM(pow(m_A, 2.0));*/
+
+	double alpha_EM = 1.0/137.0;
+
+	double Gamma_l = alpha_EM /3.0 * m_A * (1.0 + 2.0 * pow(m_l, 2.0) / pow(m_A, 2.0)) * sqrt(1.0 - 4.0 * pow(m_l, 2.0) / pow(m_A, 2.0));
+
+	return Gamma_l;
 
 }
 
-double R_mu(FILE *file_in, double m_A){
+double hadrons_width(double R_mu, double Gamma_l){
+
+	double Gamma_h = Gamma_l * R_mu;
+
+	return Gamma_h;
+
+}
+
+double Gamma_A(double epsilon2, double massA){
+
+	double x, y, u1, u2;
+	std::vector<double> m_A, R_mu, v1, v2;
+
+	for(int i=0;i<14;i++){
+
+		m_A.push_back(0.22 + i * 0.01);
+		R_mu.push_back(0.0);
+		v1.push_back(0.0);
+		v2.push_back(0.0);
+
+	}
 
 
-	return R;
+	std::ifstream file("rdata.txt");
+    	if(file.is_open()){
+
+		file >> x >> y >> u1 >> u2;
+		m_A.push_back(x);
+		R_mu.push_back(y);
+		v1.push_back(u1);
+		v2.push_back(u2);
+
+		// Begin reading data
+		while(file >> x >> y >> u1 >> u2){
+	
+			m_A.push_back(x);
+			R_mu.push_back(y);
+			v1.push_back(u1);
+			v2.push_back(u2);
+
+		}
+
+    	}
+
+	double mA[12], Rmu[12], w1[12], w2[12], wx1[12], wx2[12];
+
+	for(int i=0;i<12;i++){
+
+		mA[i] = m_A[i+14];
+		Rmu[i] = R_mu[i+14];
+		w1[i] = v1[i+14];
+		w2[i] = abs(v2[i+14]);
+		wx1[i] = 0.0;
+		wx2[i] = 0.0;
+
+	}	
+
+	TF1 *fit = new TF1("fit", "[0]*exp([1]*x)", 0.36, 0.46);
+
+	TGraphAsymmErrors *gre = new TGraphAsymmErrors(12, mA, Rmu, wx2, wx1, w2, w1);
+   	gre->Fit("fit","EX0");
+
+	double p0 = fit->GetParameter(0);
+	double p1 = fit->GetParameter(1);
+
+	for(int i=6;i<14;i++){
+
+		R_mu[i] = p0 * exp(p1 * m_A[i]);
+
+	}
+
+	/*Pythia pythia;
+	ParticleData& pdt = pythia.particleData;
+
+	pythia.init(); 
+
+	double m_mu = pdt.m0(13);//muon mass
+	double m_e = pdt.m0(11);//electron mass
+	double m_tau = pdt.m0(15);//tau mass
+	*/
+	
+
+	double m_mu = 0.10566;//muon mass
+	double m_e = 5.110e-04;//electron mass
+	double m_tau = 1.77682;//tau mass	
+
+	double Gamma_inv = 0.0;
+
+	int N = m_A.size();
+	double Gamma[N], Gamma_mu[N], Gamma_e[N], Gamma_h[N];
+
+	double G;
+
+	for(int i=0;i<N;i++){
+
+		Gamma_mu[i] = lepton_width(m_A[i], m_mu, epsilon2);
+		Gamma_e[i] = lepton_width(m_A[i], m_e, epsilon2);
+		Gamma_h[i] = hadrons_width(R_mu[i], Gamma_mu[i]);
+
+		if(m_A[i] < 2.0*0.28){
+
+			Gamma[i] = Gamma_e[i] + Gamma_mu[i] + Gamma_inv;
+
+		}
+		else if(m_A[i] < 2.0*m_tau){
+
+			Gamma[i] = Gamma_e[i] + Gamma_mu[i] + Gamma_h[i] + Gamma_inv;;
+
+		}
+		else if(m_A[i] > 2.0*m_tau){
+
+			Gamma[i] = Gamma_e[i] + Gamma_mu[i] + lepton_width(m_A[i], m_tau, epsilon2) + Gamma_h[i] + Gamma_inv;
+
+		}
+
+		if(massA == m_A[i]){G = Gamma[i];}
+
+	}
+
+	return G;
 
 }
 
-double hadrons_width(FILE *file_in, double m_A, double m_l, double epsilon2){
-
-	double gamma_h = lepton_width(double m_A, double m_l, double epsilon2) - R_mu(FILE *file_in, double m_A);
-
-	return gamma_h;
-
-}
 
 int main() {
 
@@ -83,20 +225,24 @@ int main() {
 	pythia1.readString("PhaseSpace:pTHatMin = 20.");
 	pythia1.readString("ProcessLevel:all = off");
 
-	pythia2.readString("Random:setSeed = on");
-    	pythia2.readString("Random:seed = 0");
-    	pythia2.readString("SoftQCD:all = on");
-	pythia2.readString("PhaseSpace:pTHatMin = 20.");
-	pythia2.readString("ProcessLevel:all = off");
-
 	//Set eta to decay 
 	pythia0.readString("221:onMode = on");
 
+	//Set the features of the second pythia instance to force the eta to decay via A' and a gamma where the A' decays into a di-muon pair. 
+	//The features of A' (this case is Z'0) are determined: its mass and width
+	pythia1.readString("32:m0=0.27");
+
+	double epsilon2 = 1e-11;
+	double massA = 0.27;
+	double width = Gamma_A(epsilon2, massA);
+	pythia1.readString("32:mWidth=width");
+/*
+	pythia1.readString("221:onMode = off");
+	pythia1.readString("221:onIfMatch = 22 13 -13");*/
 	pythia1.readString("221:onMode = off");
 	pythia1.readString("221:onIfMatch = 22 32");
-
-	pythia2.readString("32:onMode = off");
-	pythia2.readString("32:onIfMatch = 13 -13");
+	pythia1.readString("32:onMode = off");
+	pythia1.readString("32:onIfMatch = 13 -13");
 
 	//Initilise for p (2212) and  p (2212) collisins at 13 TeV
     	//initialization of LHC environment
@@ -106,18 +252,13 @@ int main() {
 	pythia1.readString("Beams:idA = 2212");
     	pythia1.readString("Beams:idB = 2212");
 
-	pythia2.readString("Beams:idA = 2212");
-    	pythia2.readString("Beams:idB = 2212");
-
     	//Start at 13 TeV
     	double myEcm =13000.;
     	pythia0.settings.parm("Beams:eCM", myEcm);
 	pythia1.settings.parm("Beams:eCM", myEcm);
-	pythia2.settings.parm("Beams:eCM", myEcm);
 
 	pythia0.init();
 	pythia1.init();
-	pythia2.init();
 
 	// Set up the ROOT TFile and TTree.
 	TFile *file = TFile::Open("gs_project61.root","recreate");
@@ -125,19 +266,21 @@ int main() {
 	//Create event
 	Event *event = &pythia0.event;
 	Event *event1 = &pythia1.event;
-	Event *event2 = &pythia2.event;
 
 	//Define a histograms into which we accumulate the invariant mass distribution for muon combinations
     	TH1D *eta_invmass = new TH1D("eta_invmass","Reconstructed eta invariant mass from #gamma + muon pairs", 100, 0.0, 1.0);
     	eta_invmass -> GetXaxis()-> SetTitle("m (GeV)");
 
-	TH1D *mu_number_event = new TH1D("mu_number_event","Muon-antimuon number per event without #eta-> #gamma #mu^{+} #mu^{-}", 100000, 0.0, 100000.0);
+	TH1D *mu_invmass = new TH1D("mu_invmass","Reconstructed di-muon invariant mass", 100, 0.0, 2.0);
+    	mu_invmass -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *mu_number_event = new TH1D("mu_number_event","Muon-antimuon number per event without #eta-> #gamma #mu^{+} #mu^{-}", 10, 0.0, 10.0);
     	mu_number_event -> GetXaxis()-> SetTitle("event index");
 	mu_number_event -> GetYaxis()-> SetTitle("number of #mu^{#pm}");
 
-	TH1D *gamma_number_event = new TH1D("gamma_number_event","#gamma number per event without #eta-> #gamma #mu^{+} #mu^{-}", 100000, 0.0, 100000.0);
-    	mu_number_event -> GetXaxis()-> SetTitle("event index");
-	mu_number_event -> GetYaxis()-> SetTitle("number of #gamma");
+	TH1D *gamma_number_event = new TH1D("gamma_number_event","#gamma number per event without #eta-> #gamma #mu^{+} #mu^{-}", 10, 0.0, 10.0);
+    	gamma_number_event -> GetXaxis()-> SetTitle("event index");
+	gamma_number_event -> GetYaxis()-> SetTitle("number of #gamma");
 
 	//Create TTree for etas
 	TTree *T1 = new TTree("T1","ev1 Tree");
@@ -303,9 +446,6 @@ int main() {
 
 		}
 
-		mu_number_event -> SetBinContent(iEvent, mu_antimu_number);//filling the mu-antimu/event histogram;
-		gamma_number_event -> SetBinContent(iEvent, gamma_number);//filling the gamma/event histogram;
-
 		TRandom2 *rndm=new TRandom2(0);
 		int n = v.size();
 		int x = (int) rndm->Uniform(n);
@@ -328,6 +468,8 @@ int main() {
 				Double_t px = 0.0;
 				Double_t py = 0.0;
 				Double_t pz = 0.0;
+
+				Vec4 p1, p2;
 
 				for (Long64_t j = 0; j < pythia1.event.size(); ++j) {
 
@@ -354,12 +496,28 @@ int main() {
 						py = py + py_var;
 						pz = pz + pz_var;
 
+						if(pythia1.event[j].id() == 13){p1 = pythia1.event[j].p();}
+						else if(pythia1.event[j].id() == -13){p2 = pythia1.event[j].p();}
+
+						if((pythia1.event[j].id() == 13) || (pythia1.event[j].id() == -13)){
+
+							//mu_invmass -> Fill(pythia1.event[j].m());
+							++mu_antimu_number;
+
+						}
+						else if(pythia1.event[j].id() == 22){
+							++gamma_number;
+						}
+
 					}
 
 				}
 
 				Double_t inv_mass = sqrt(pow(E, 2)- pow(px, 2) - pow(py, 2) - pow(pz, 2));
 				eta_invmass -> Fill(inv_mass);
+
+				Double_t inv_mass2 = invmass(p1, p2);
+				mu_invmass -> Fill(inv_mass2);
 
 			}
 			else{
@@ -382,11 +540,18 @@ int main() {
 
 					T2->Fill();
 
+					if(pythia0.event[pythia0.event[v[i]].daughterList()[j]].id() == 22){
+						++gamma_number;
+					}
+
 				}
 
 			}
 
 		}
+
+		mu_number_event -> SetBinContent(iEvent+1, mu_antimu_number);//filling the mu-antimu/event histogram;
+		gamma_number_event -> SetBinContent(iEvent+1, gamma_number);//filling the gamma/event histogram;
 
 		v.clear();
 	

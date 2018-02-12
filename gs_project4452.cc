@@ -65,7 +65,7 @@ double eta(vect *v, Long64_t i){
 
 }
 
-//void analyze_event1(vect *v, TTree *T1, TH1D *eta_invmass_mother1, TH1D *pt_mother1, TH1D *p_mother1, TH1D *eta_invmass_cuts_mother1, TH1D *eta_massdiff_mother1){
+
 void analyze_event1(vect *v,  TH1D *eta_invmass_mother1, TH1D *pt_mother1, TH1D *p_mother1, TH1D *eta_invmass_cuts_mother1, TH1D *eta_invmass_c3_mother1, TH1D *eta_invmass_bkg1, TH1D *eta_invmass_cuts_bkg1, TH1D *eta_invmass_c3_bkg1, TH1D *eta_massdiff_mother1, TH1D *mu_combnumber_event1, TH1D *mu_combnumber_cuts_event1){
 
 	double inv_mass, pt1, pt2, p1, p2, eta1, eta2;
@@ -221,38 +221,42 @@ void analyze_event_pi(vect *v, TH1D *pi_invmass, TH1D *pi_pt, TH1D *pi_p, TH1D *
 
 					++pi_combnumber;
 
-					//Reconstructing invariant mass of all pi+/- combinations
-					inv_mass = invmass1(v, i, j);
+					if((v->motherid1[i] != 310) && (v->motherid1[j] != 310)){
 
-					//Plot histogram of all pi+/- combinations
-					pi_invmass->Fill(inv_mass);
+						//Reconstructing invariant mass of all pi+/- combinations
+						inv_mass = invmass1(v, i, j);
 
-					pt1 = pt(v, i);
-					pi_pt->Fill(pt1);
+						//Plot histogram of all pi+/- combinations
+						pi_invmass->Fill(inv_mass);
 
-					pt2 = pt(v, j);
-					pi_pt->Fill(pt2);
+						pt1 = pt(v, i);
+						pi_pt->Fill(pt1);
 
-					p1 = p(v, i);
-					pi_p->Fill(p1);
+						pt2 = pt(v, j);
+						pi_pt->Fill(pt2);
 
-					p2 = p(v, j);
-					pi_p->Fill(p2);
+						p1 = p(v, i);
+						pi_p->Fill(p1);
 
-					eta1 = eta(v, i);
+						p2 = p(v, j);
+						pi_p->Fill(p2);
 
-					eta2 = eta(v, j);
+						eta1 = eta(v, i);
+
+						eta2 = eta(v, j);
 
 
-					if((pt1>0.5) && (pt2>0.5) && (p1>10.0) && (p2>10.0) && (eta1>2.0) && (eta1<4.5) && (eta2>2.0) && (eta2<4.5)){
+						if((v->motherid1[i] != 310) && (v->motherid1[j] != 310) && (pt1>0.5) && (pt2>0.5) && (p1>10.0) && (p2>10.0) && (eta1>2.0) && (eta1<4.5) && (eta2>2.0) && (eta2<4.5)){
 
-						pi_invmass_c3->Fill(inv_mass);
+							pi_invmass_c3->Fill(inv_mass);
 
-						if((inv_mass < m_eta+dm_eta) && (inv_mass> m_eta-dm_eta)){
+							if((inv_mass < m_eta+dm_eta) && (inv_mass> m_eta-dm_eta)){
 
-							pi_invmass_cuts->Fill(inv_mass);
+								pi_invmass_cuts->Fill(inv_mass);
 
-							++pi_combnumber_cuts;
+								++pi_combnumber_cuts;
+
+							}
 
 						}
 
@@ -272,6 +276,47 @@ void analyze_event_pi(vect *v, TH1D *pi_invmass, TH1D *pi_pt, TH1D *pi_p, TH1D *
 		pi_combnumber_cuts_event->SetBinContent((v->index[1])+1,pi_combnumber_cuts);
 
 	}
+
+}
+
+void analyze_event_pi2(vect *v, TH1D *pi_invmass2){
+
+	double inv_mass, pt1, pt2, p1, p2, eta1, eta2;
+
+	double m_eta = 0.54785;
+	double dm_eta = 0.02;
+
+	Long64_t nentries = v->index.size();
+
+	for(Long64_t i=0;i<nentries;i++){ 
+
+		//if entry is pi+
+		if(v->id[i] == 211){
+
+			//Loop through the event and find a pi-
+			for(Long64_t j=0;j<nentries;j++){
+
+				//if entry is pi-
+				if(v->id[j] == -211){
+
+					if((v->motherid1[i] != 310) && (v->motherid1[j] != 310)){
+
+						//Reconstructing invariant mass of all pi+/- combinations
+						inv_mass = invmass1(v, i, j);
+
+						//Plot histogram of all pi+/- combinations
+						pi_invmass2->Fill(inv_mass);
+
+					}
+
+				}
+
+			}
+		
+		}
+
+	}
+
 
 }
 
@@ -499,6 +544,18 @@ int main() {
 	
 	TH1D *pi_invmass = new TH1D("pi_invmass","Reconstructed #eta invariant mass from misID #pi^{#pm}", Nbins1 - 1, Edges1);
     	pi_invmass -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *pi_invmass0 = new TH1D("pi_invmass0","Reconstructed #eta invariant mass from misID #pi^{#pm}", Nbins1 - 1, Edges1);
+    	pi_invmass0 -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *pi_invmass2 = new TH1D("pi_invmass2","Reconstructed #eta invariant mass from misID #pi^{#pm}", Nbins1 - 1, Edges1);
+    	pi_invmass2 -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *pi_invmass3 = new TH1D("pi_invmass3","Reconstructed #eta invariant mass from misID #pi^{#pm}", Nbins1 - 1, Edges1);
+    	pi_invmass3 -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *pi_invmass4 = new TH1D("pi_invmass4","Reconstructed #eta invariant mass from misID #pi^{#pm}", Nbins1 - 1, Edges1);
+    	pi_invmass4 -> GetXaxis()-> SetTitle("m (GeV)");
 
 	TH1D *eta_invmass_mother2 = new TH1D("eta_invmass_mother2","Reconstructed invariant mass from #mu pairs + #gamma ",  Nbins2 - 1, Edges2);
     	eta_invmass_mother2 -> GetXaxis()-> SetTitle("m (GeV)");
@@ -818,6 +875,389 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	      	
    	}
 
+
+	//Loop through the entries of tree T3
+	nentries = T3->GetEntries();
+std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
+   	for (Long64_t i=0;i<nentries;i++){
+
+	      	T3->GetEntry(i);
+
+		//checks if the entry is the very last one in the tree
+		if(i+1==nentries){
+
+			//add last particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			analyze_event_pi2(v, pi_invmass0);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+		}
+
+		//checks if the new entry is from the same event as the previous one
+		else if(prev_index!=index_var){
+
+			analyze_event_pi2(v, pi_invmass0);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			prev_index = index_var;//setting the index for current event
+
+		}
+		else{
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+		}
+		
+	      	
+   	}
+
+	for (Long64_t i=0;i<nentries;i++){
+
+	      	T3->GetEntry(i);
+
+		if(index_var>=50000){break;}
+
+		//checks if the entry is the very last one in the tree
+		if(i+1==nentries){
+
+			//add last particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			analyze_event_pi2(v, pi_invmass2);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+		}
+
+		//checks if the new entry is from the same event as the previous one
+		else if(prev_index!=index_var){
+
+			analyze_event_pi2(v, pi_invmass2);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			prev_index = index_var;//setting the index for current event
+
+		}
+		else{
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+		}
+		
+	      	
+   	}
+
+	for (Long64_t i=0;i<nentries;i++){
+
+	      	T3->GetEntry(i);
+
+		if(index_var>=10000){break;}
+
+		//checks if the entry is the very last one in the tree
+		if(i+1==nentries){
+
+			//add last particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			analyze_event_pi2(v, pi_invmass3);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+		}
+
+		//checks if the new entry is from the same event as the previous one
+		else if(prev_index!=index_var){
+
+			analyze_event_pi2(v, pi_invmass3);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			prev_index = index_var;//setting the index for current event
+
+		}
+		else{
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+		}
+		
+	      	
+   	}
+
+	for (Long64_t i=0;i<nentries;i++){
+
+	      	T3->GetEntry(i);
+
+		if(index_var>=1000){break;}
+
+		//checks if the entry is the very last one in the tree
+		if(i+1==nentries){
+
+			//add last particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			analyze_event_pi2(v, pi_invmass4);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+		}
+
+		//checks if the new entry is from the same event as the previous one
+		else if(prev_index!=index_var){
+
+			analyze_event_pi2(v, pi_invmass4);
+			
+
+			//clear vector
+			v->index.clear();
+			v->id.clear();
+			v->energy.clear();
+			v->mass.clear();
+			v->px.clear();
+			v->py.clear();
+			v->pz.clear();
+			v->mother1.clear();
+			v->mother2.clear();
+			v->motherid1.clear();
+			v->motherid2.clear();
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+			prev_index = index_var;//setting the index for current event
+
+		}
+		else{
+
+			//add new particle to the event vector
+			v->index.push_back(index_var);
+			v->id.push_back(id_var);
+			v->energy.push_back(energy_var);
+			v->mass.push_back(mass_var);
+			v->px.push_back(px_var);
+			v->py.push_back(py_var);
+			v->pz.push_back(pz_var);
+			v->mother1.push_back(mother1_var);
+			v->mother2.push_back(mother2_var);
+			v->motherid1.push_back(motherid1_var);
+			v->motherid2.push_back(motherid2_var);
+
+		}
+		
+	      	
+   	}
+
+
 	//Loop through the entries of the tree
 	nentries = T5->GetEntries();
 std::cout<<"Total number of entries: "<<nentries<<std::endl;
@@ -1101,16 +1541,12 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 
 	double misID = 1e-6;
 
-	//nentries = pi_invmass->GetEntries();
-	//pi_invmass->Scale(1.0 / nentries, "width");
-	//pi_invmass->Scale(misID);
 	pi_invmass->Scale(misID, "width");
 	pi_invmass->Draw();
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project4452_pi_invmass1.pdf","pdf");
-
 
 
 	//nentries = eta_invmass_cuts_mother1->GetEntries();
@@ -1309,15 +1745,15 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	pi_invmass_cuts->Draw("same");
 
 	TLegend *legend6 = new TLegend(0.5,0.5,0.9,0.7);	
-	TLegendEntry *leg62 = legend6->AddEntry("dimuons_invmass_cuts_mother2","#eta invariant mass from #mu #mu #gamma","f");
+	TLegendEntry *leg62 = legend6->AddEntry("dimuons_invmass_cuts_mother2","di-muon invariant mass from #mu #mu #gamma","f");
   	leg62->SetFillColor(kRed);
-	TLegendEntry *leg61 = legend6->AddEntry("eta_invmass_cuts_mother1","#eta invariant mass from #mu #mu","f");
+	TLegendEntry *leg61 = legend6->AddEntry("eta_invmass_cuts_mother1","di-muon invariant mass from #mu #mu","f");
   	leg61->SetFillColor(kBlue);	
 	TLegendEntry *leg63 = legend6->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
   	leg63->SetFillColor(kGreen);
 	legend6->Draw("same");
 
-	eta_invmass_cuts_mother1->SetTitle("Reconstructed di-muon invariant mass after all cuts");
+	dimuons_invmass_cuts_mother2->SetTitle("Reconstructed di-muon invariant mass after all cuts");
 	dimuons_invmass_cuts_mother2 -> GetXaxis()-> SetTitle("m_{#mu #mu} (GeV)");
 
 	c1->Modified();
@@ -1336,15 +1772,15 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	pi_invmass_c3->Draw("same");
 
 	TLegend *legend7 = new TLegend(0.5,0.1,0.9,0.3);	
-	TLegendEntry *leg72 = legend7->AddEntry("dimuons_invmass_c3_mother2","#eta invariant mass from #mu #mu #gamma","f");
+	TLegendEntry *leg72 = legend7->AddEntry("dimuons_invmass_c3_mother2","di-muon invariant mass from #mu #mu #gamma","f");
   	leg72->SetFillColor(kRed);
-	TLegendEntry *leg71 = legend7->AddEntry("eta_invmass_c3_mother1","#eta invariant mass from #mu #mu","f");
+	TLegendEntry *leg71 = legend7->AddEntry("eta_invmass_c3_mother1","di-muon invariant mass from #mu #mu","f");
   	leg71->SetFillColor(kBlue);	
 	TLegendEntry *leg73 = legend7->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
   	leg73->SetFillColor(kGreen);
 	legend7->Draw("same");
 
-	eta_invmass_c3_mother1->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p & pseudorapidity cuts");
+	dimuons_invmass_c3_mother2->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p & pseudorapidity cuts");
 	dimuons_invmass_c3_mother2 -> GetXaxis()-> SetTitle("m_{#mu #mu} (GeV)");
 
 	c1->Modified();
@@ -1469,9 +1905,9 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	pi_invmass_cuts->Draw("same");
 
 	TLegend *legend9 = new TLegend(0.5,0.5,0.9,0.7);	
-	TLegendEntry *leg92 = legend9->AddEntry("dimuons_invmass_cuts_bkg2","#eta invariant mass from #mu #mu #gamma","f");
+	TLegendEntry *leg92 = legend9->AddEntry("dimuons_invmass_cuts_bkg2","di-muon invariant mass from #mu #mu #gamma","f");
   	leg92->SetFillColor(kRed);
-	TLegendEntry *leg91 = legend9->AddEntry("eta_invmass_cuts_bkg1","#eta invariant mass from #mu #mu","f");
+	TLegendEntry *leg91 = legend9->AddEntry("eta_invmass_cuts_bkg1","di-muon invariant mass from #mu #mu","f");
   	leg91->SetFillColor(kBlue);	
 	TLegendEntry *leg93 = legend9->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
   	leg93->SetFillColor(kGreen);
@@ -1496,9 +1932,9 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	pi_invmass_c3->Draw("same");
 
 	TLegend *legend10 = new TLegend(0.5,0.55,0.9,0.75);	
-	TLegendEntry *leg102 = legend10->AddEntry("dimuons_invmass_c3_bkg2","#eta invariant mass from #mu #mu #gamma","f");
+	TLegendEntry *leg102 = legend10->AddEntry("dimuons_invmass_c3_bkg2","di-muon invariant mass from #mu #mu #gamma","f");
   	leg102->SetFillColor(kRed);
-	TLegendEntry *leg101 = legend10->AddEntry("eta_invmass_c3_bkg1","#eta invariant mass from #mu #mu","f");
+	TLegendEntry *leg101 = legend10->AddEntry("eta_invmass_c3_bkg1","di-muon invariant mass from #mu #mu","f");
   	leg101->SetFillColor(kBlue);	
 	TLegendEntry *leg103 = legend10->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
   	leg103->SetFillColor(kGreen);
@@ -1514,6 +1950,81 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	c1->Print("project4452_dimuon_invmass_bkg_c3123.pdf","pdf");
 
 
+
+	dimuons_invmass_cuts_mother2->SetLineColor(kRed);
+	dimuons_invmass_cuts_mother2->SetFillStyle(1001);
+	dimuons_invmass_cuts_mother2->Draw();
+	eta_invmass_cuts_mother1->SetLineColor(kBlue);
+	eta_invmass_cuts_mother1->SetFillStyle(1001);
+	eta_invmass_cuts_mother1->Draw("same");
+	dimuons_invmass_cuts_bkg2->SetLineColor(kMagenta);
+	dimuons_invmass_cuts_bkg2->SetFillStyle(1001);
+	dimuons_invmass_cuts_bkg2->Draw("same");
+	eta_invmass_cuts_bkg1->SetLineColor(kOrange);
+	eta_invmass_cuts_bkg1->SetFillStyle(1001);
+	eta_invmass_cuts_bkg1->Draw("same");
+	pi_invmass_cuts->SetLineColor(kGreen);
+	pi_invmass_cuts->SetFillStyle(1001);
+	pi_invmass_cuts->Draw("same");
+
+	TLegend *legend15 = new TLegend(0.5,0.5,0.9,0.7);
+	TLegendEntry *leg150 = legend15->AddEntry("dimuons_invmass_cuts_mother2","di-muon invariant mass from #mu #mu #gamma (sig)","f");
+  	leg150->SetFillColor(kRed);
+	TLegendEntry *leg151 = legend15->AddEntry("eta_invmass_cuts_mother1","di-muon invariant mass from #mu #mu (sig)","f");
+  	leg151->SetFillColor(kBlue);	
+	TLegendEntry *leg152 = legend15->AddEntry("dimuons_invmass_cuts_bkg2","di-muon invariant mass from #mu #mu #gamma (sig+bkg)","f");
+  	leg152->SetFillColor(kMagenta);
+	TLegendEntry *leg153 = legend15->AddEntry("eta_invmass_cuts_bkg1","di-muon invariant mass from #mu #mu (sig+bkg)","f");
+  	leg153->SetFillColor(kOrange);	
+	TLegendEntry *leg154 = legend15->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
+  	leg154->SetFillColor(kGreen);
+	legend15->Draw("same");
+
+	dimuons_invmass_cuts_mother2->SetTitle("Reconstructed di-muon invariant mass after all cuts");
+	dimuons_invmass_cuts_mother2 -> GetXaxis()-> SetTitle("m_{#mu #mu} (GeV)");
+	dimuons_invmass_cuts_mother2->SetAxisRange(1e-2, 1e1,"Y");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_dimuon_invmass_sigbkg_cuts123.pdf","pdf");
+
+
+	dimuons_invmass_c3_mother2->SetLineColor(kRed);
+	dimuons_invmass_c3_mother2->SetFillStyle(1001);
+	dimuons_invmass_c3_mother2->Draw();
+	eta_invmass_c3_mother1->SetLineColor(kBlue);
+	eta_invmass_c3_mother1->SetFillStyle(1001);
+	eta_invmass_c3_mother1->Draw("same");
+	dimuons_invmass_c3_bkg2->SetLineColor(kMagenta);
+	dimuons_invmass_c3_bkg2->SetFillStyle(1001);
+	dimuons_invmass_c3_bkg2->Draw("same");
+	eta_invmass_c3_bkg1->SetLineColor(kOrange);
+	eta_invmass_c3_bkg1->SetFillStyle(1001);
+	eta_invmass_c3_bkg1->Draw("same");
+	pi_invmass_c3->SetLineColor(kGreen);
+	pi_invmass_c3->SetFillStyle(1001);
+	pi_invmass_c3->Draw("same");
+
+	TLegend *legend16 = new TLegend(0.3,0.7,0.7,0.9);
+	TLegendEntry *leg160 = legend16->AddEntry("dimuons_invmass_c3_mother2","di-muon invariant mass from #mu #mu #gamma (sig)","f");
+  	leg160->SetFillColor(kRed);
+	TLegendEntry *leg161 = legend16->AddEntry("eta_invmass_c3_mother1","di-muon invariant mass from #mu #mu (sig)","f");
+  	leg161->SetFillColor(kBlue);	
+	TLegendEntry *leg162 = legend16->AddEntry("dimuons_invmass_c3_bkg2","di-muon invariant mass from #mu #mu #gamma (sig+bkg)","f");
+  	leg162->SetFillColor(kMagenta);
+	TLegendEntry *leg163 = legend16->AddEntry("eta_invmass_c3_bkg1","di-muon invariant mass from #mu #mu (sig+bkg)","f");
+  	leg163->SetFillColor(kOrange);	
+	TLegendEntry *leg164 = legend16->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
+  	leg164->SetFillColor(kGreen);
+	legend16->Draw("same");
+
+	dimuons_invmass_c3_mother2->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p & pseudorapidity cuts");
+	dimuons_invmass_c3_mother2 -> GetXaxis()-> SetTitle("m_{#mu #mu} (GeV)");
+	dimuons_invmass_c3_mother2->SetAxisRange(1e-2, 1e3,"Y");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_dimuon_invmass_sigbkg_c3123.pdf","pdf");
 
 
 
@@ -1542,11 +2053,80 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 	c1->Update();
 	c1->Print("project4452_etapi_invmass123.pdf","pdf");
 
-	gPad->SetLogx();
+	/*gPad->SetLogx();
 
 	c1->Modified();
 	c1->Update();
-	c1->Print("project4452_etainvmass123.pdf","pdf");
+	c1->Print("project4452_etainvmass123.pdf","pdf");*/
+
+	pi_invmass0->Sumw2(kTRUE);
+	pi_invmass0->Scale(misID, "width");
+	pi_invmass0->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_pi_invmass0.pdf","pdf");
+
+	pi_invmass2->Sumw2(kTRUE);
+	pi_invmass2->Scale(misID*2.0, "width");
+	pi_invmass2->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_pi_invmass2.pdf","pdf");
+
+	pi_invmass3->Sumw2(kTRUE);
+	pi_invmass3->Scale(misID*10.0, "width");
+	pi_invmass3->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_pi_invmass3.pdf","pdf");
+
+	pi_invmass4->Sumw2(kTRUE);
+	pi_invmass4->Scale(misID*100.0, "width");
+	pi_invmass4->Draw();
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_pi_invmass4.pdf","pdf");
+
+	//pi_invmass->Scale(misID*1e5, "width");
+
+	pi_invmass0->SetLineColor(kRed);
+	pi_invmass0->SetFillStyle(1001);
+	//pi_invmass0->Draw();
+	pi_invmass0->Draw();
+	pi_invmass2->SetLineColor(kBlue);
+	pi_invmass2->SetFillStyle(1001);
+	//pi_invmass2->Draw("E1");
+	pi_invmass2->Draw("same");
+	pi_invmass3->SetLineColor(kGreen);
+	pi_invmass3->SetFillStyle(1001);
+	//pi_invmass3->Draw("E1");
+	pi_invmass3->Draw("same");
+	pi_invmass4->SetLineColor(kOrange);
+	pi_invmass4->SetFillStyle(1001);
+	//pi_invmass4->Draw("E1");
+	pi_invmass4->Draw("same");
+
+	TLegend *legend20 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg201 = legend20->AddEntry("pi_invmass0","misID #pi invariant mass 10^{5} events","f");
+  	leg201->SetFillColor(kRed);	
+	TLegendEntry *leg202 = legend20->AddEntry("pi_invmass2","misID #pi invariant mass 5*10^{4} events","f");
+  	leg202->SetFillColor(kBlue);	
+	TLegendEntry *leg203 = legend20->AddEntry("pi_invmass3","misID #pi invariant mass 10^{4} events","f");
+  	leg203->SetFillColor(kGreen);	
+	TLegendEntry *leg204 = legend20->AddEntry("pi_invmass4","misID #pi invariant mass 10^{3} events","f");
+  	leg204->SetFillColor(kOrange);	
+	legend20->Draw("same");
+
+	pi_invmass0->SetTitle("Reconstructed misID #pi invariant mass to show scaling works");
+	pi_invmass0->SetAxisRange(1e-3, 1e2,"Y");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project4452_pi_invmass_scaling12.pdf","pdf");
 
 
 	file_out->Write();

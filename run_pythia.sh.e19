@@ -1,0 +1,2 @@
+Configuring LCGCMT 84 from /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCGCMT/LCGCMT_84
+Error in <TFile::Init>: rdata.txt not a ROOT file

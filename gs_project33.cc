@@ -14,7 +14,7 @@
 #include "TRandom2.h"
 #include "Pythia8/SigmaHiggs.h"
 #include "cmath"
-#include "Pythia8Plugins/HepMC2.h"
+//#include "Pythia8Plugins/HepMC2.h"
 #include <vector>
 
 using namespace Pythia8;
@@ -28,10 +28,10 @@ double invmass(Vec4 p1, Vec4 p2){
 
 int main() {
 
-	HepMC::Pythia8ToHepMC ToHepMC;
+	//HepMC::Pythia8ToHepMC ToHepMC;
 
     	// Specify file where HepMC events will be stored.
-    	HepMC::IO_GenEvent ascii_io("gs_project33.dat", std::ios::out);
+    	//HepMC::IO_GenEvent ascii_io("gs_project33.dat", std::ios::out);
 
 	// Generator. Process selection. LHC initialization. Histogram.
     	Pythia pythia0, pythia1;

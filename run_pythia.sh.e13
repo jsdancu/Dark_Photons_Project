@@ -1,0 +1,2 @@
+WARNING:lb-run:unusable path for pythia6: /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/./MCGenerators/pythia6/428.2/x86_64-slc6-gcc62-opt
+Error in <TFile::Init>: rdata.txt not a ROOT file

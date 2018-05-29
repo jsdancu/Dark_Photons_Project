@@ -1,0 +1,2 @@
+WARNING:lb-run:unusable path for pythia6: /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/./MCGenerators/pythia6/428.2/x86_64-slc6-gcc62-opt
+/cvmfs/lhcb.cern.ch/lib/lhcb/LBSCRIPTS/LBSCRIPTS_v9r2p4/InstallArea/scripts/lb-run: ./gs_project65: No such file or directory

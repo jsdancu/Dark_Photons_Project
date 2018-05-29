@@ -1,2 +1,0 @@
-Table showing signal significance of pions passing various cuts: 
-pt    p     eta     mass 

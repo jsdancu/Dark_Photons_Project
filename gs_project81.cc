@@ -4,7 +4,7 @@
 //Reconstructing the Dark Photon's width vs its mass and kinetic mixing
 
 #include "Pythia8/Pythia.h"
-#include "Pythia8Plugins/HepMC2.h"
+//#include "Pythia8Plugins/HepMC2.h"
 //#include "Pythia8Plugins/CoupSM.h"
 #include "TH1.h"
 #include "TH2.h"
@@ -14,6 +14,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TVectorD.h"
 #include "TFile.h"
+#include "TStyle.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
@@ -25,7 +26,7 @@
 #include <fstream>
 #include <stdio.h>
 
-using namespace Pythia8;
+//using namespace Pythia8;
 //using namespace CoupSM;
 
 double lepton_width(double m_A, double m_l, double epsilon2){
@@ -72,6 +73,13 @@ double hadrons_width(double R_mu, double Gamma_l){
 
 int main() {
 
+	//Loading lhcbStyle for plotting
+	//gROOT->ProcessLine(".x lhcbStyle.C");
+	//lhcbStyle();
+
+	// Example of adding stat box - turned off by default in plots
+	//gStyle->SetOptStat("emr");  // show only nent - e , mean - m , rms - r
+
 	//HepMC::Pythia8ToHepMC ToHepMC;
 
 	//Open R-data file
@@ -80,9 +88,13 @@ int main() {
 	double x, y, u1, u2;
 	std::vector<double> m_A, R_mu, v1, v2;
 
-	for(int i=0;i<14;i++){
+	double step = 0.001;
+	double mA0 = 0.22;
+	int n = (0.36-mA0) / step;
 
-		m_A.push_back(0.22 + i * 0.01);
+	for(int i=0;i<n;i++){
+
+		m_A.push_back(mA0 + i * step);
 		R_mu.push_back(0.0);
 		v1.push_back(0.0);
 		v2.push_back(0.0);
@@ -115,10 +127,10 @@ int main() {
 
 	for(int i=0;i<12;i++){
 
-		mA[i] = m_A[i+14];
-		Rmu[i] = R_mu[i+14];
-		w1[i] = v1[i+14];
-		w2[i] = abs(v2[i+14]);
+		mA[i] = m_A[i+n];
+		Rmu[i] = R_mu[i+n];
+		w1[i] = v1[i+n];
+		w2[i] = abs(v2[i+n]);
 		wx1[i] = 0.0;
 		wx2[i] = 0.0;
 
@@ -132,6 +144,7 @@ int main() {
 	gre->SetTitle("Fitting the 0.36-0.46 GeV region of R_{#mu}");
 	gre->GetXaxis()->SetTitle("m_{A'} (GeV)");
 	gre->GetYaxis()->SetTitle("R_{#mu}");
+	gre->GetYaxis()->SetTitleOffset(1.4);
    	gre->Draw("ap");
    	gre->Fit("fit","EX0");
 
@@ -140,7 +153,8 @@ int main() {
 	double p0 = fit->GetParameter(0);
 	double p1 = fit->GetParameter(1);
 
-	for(int i=6;i<14;i++){
+	int had0 = (0.28-mA0)/step;
+	for(int i=had0;i<n;i++){
 
 		R_mu[i] = p0 * exp(p1 * m_A[i]);
 
@@ -162,26 +176,51 @@ int main() {
 	double m_tau = 1.77682;//tau mass	
 
 	double epsilon2 = 1e-11; 
+	double eps2_max = 1e-7;
+	double increment =1e4;
+	double  eps2_step = (eps2_max-epsilon2)/increment; 
+	//double  eps2_step = 1e-11; //eps2_max/increment; 
 	double eps2, G, G_mu, G_e, G_h;
 
+	int iPowMax=6;
+	int iEpsMax=10;
+	Double_t Edges1[iPowMax*iEpsMax] ;
+	int k = 0;
+/*
+	for(int iPow=0; iPow<iPowMax; iPow++){
+
+		for(int iEps=0; iEps<iEpsMax; iEps++){
+
+			Edges1[k]=(double)pow(10,iPow)*epsilon2*(1.0+(double)iEps);
+			std::cout<< k << "  " << Edges1[k] << std::endl;
+			k++;
+
+		}
+
+	}
+*/		
 	//double Gamma_mu, Gamma_mu1;
 	double Gamma_inv = 0.0;
 
 	int N = m_A.size();
-	double Gamma[N], Gamma1[N], Br1[N], Gamma_mu[N], Gamma_mu1[N], Br2[N], Gamma_e[N], Gamma_e1[N], Br3[N], Gamma_h[N], Gamma_h1[N];
+	double Gamma[N], Gamma1[N], Br1[N], Gamma_mu[N], Gamma_mu1[N], Br2[N], Gamma_e[N], Gamma_e1[N], Br3[N], Gamma_tau[N], Gamma_tau1[N], Br4[N], Gamma_h[N], Gamma_h1[N];
 
-	TH2D *lifetime1 = new TH2D("lifetime1","Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}", 200, 0.0, 200, 1000, 1e-11, 1e-8);
+	//TH2D *lifetime1 = new TH2D("lifetime1","Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}", 500, 0.0, 200, iPowMax*iEpsMax-1, Edges1);
+	TH2D *lifetime1 = new TH2D("lifetime1","Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}", N - 1, &m_A[0], increment, epsilon2, eps2_max);
 	lifetime1 -> GetXaxis()-> SetTitle("m_{A'} (GeV)");
 	lifetime1 -> GetYaxis()-> SetTitle("#epsilon^{2}");
+	lifetime1 -> GetYaxis()-> SetTitleOffset(1.4);
 
 	for(int i=0;i<N;i++){
 
 		Gamma_mu[i] = lepton_width(m_A[i], m_mu, epsilon2);
 		Gamma_e[i] = lepton_width(m_A[i], m_e, epsilon2);
+		Gamma_tau[i] = lepton_width(m_A[i], m_tau, epsilon2);
 		Gamma_h[i] = hadrons_width(R_mu[i], Gamma_mu[i]);
 
 		Gamma_mu1[i] = lepton_width1(m_A[i], m_mu);
 		Gamma_e1[i] = lepton_width1(m_A[i], m_e);
+		Gamma_tau1[i] = lepton_width1(m_A[i], m_tau);
 		Gamma_h1[i] = hadrons_width(R_mu[i], Gamma_mu1[i]);
 
 		if(m_A[i] < 2.0*0.28){
@@ -198,19 +237,99 @@ int main() {
 		}
 		else if(m_A[i] > 2.0*m_tau){
 
-			Gamma[i] = Gamma_e[i] + Gamma_mu[i] + lepton_width(m_A[i], m_tau, epsilon2) + Gamma_h[i] + Gamma_inv;
-			Gamma1[i] = Gamma_e1[i] + Gamma_mu1[i] + lepton_width1(m_A[i], m_tau) + Gamma_h1[i] + Gamma_inv;
+			Gamma[i] = Gamma_e[i] + Gamma_mu[i] + Gamma_tau[i] + Gamma_h[i] + Gamma_inv;
+			Gamma1[i] = Gamma_e1[i] + Gamma_mu1[i] + Gamma_tau1[i] + Gamma_h1[i] + Gamma_inv;
 
 		}
 
-
 		Br1[i] = Gamma_mu[i]/Gamma[i];
 		Br2[i] = Gamma_e[i]/Gamma[i];
-		Br3[i] = Gamma_h[i]/Gamma[i];
+		Br3[i] = Gamma_tau[i]/Gamma[i];
+		Br4[i] = Gamma_h[i]/Gamma[i];
 
-		for(int j=0;j<1000;j++){
+		for(double j=0; j<increment; j++){
+		/*for(int iPow=0; iPow<iPowMax; iPow++){
 
-			eps2 = epsilon2 + j;
+			for(double iEps=0; iEps<iEpsMax; iEps++){*/
+
+				//eps2=pow(10,iPow)*epsilon2*(1.0+iEps);
+				//std::cout << "N:   " << i <<"    iPow:   " << iPow << "    iEps:   " << iEps <<"      eps2: "<<eps2 <<std::endl;
+				
+				//std::cout<< Edges1[j] <<std::endl;
+				//double eps2a=Edges1[j];
+
+				eps2 = epsilon2 + j*eps2_step;
+
+				G_mu = lepton_width(m_A[i], m_mu, eps2);
+				G_e = lepton_width(m_A[i], m_e, eps2);
+				G_h = hadrons_width(R_mu[i], G_mu);
+
+				if(m_A[i] < 2.0*m_tau){
+
+					G = G_e + G_mu + G_h + Gamma_inv;
+
+				}
+				else{
+		
+					G = G_e + G_mu + lepton_width(m_A[i], m_tau, eps2) + G_h + Gamma_inv;
+
+				}
+/*
+				if((m_A[i] == 0.27) && (eps2 == 1e-11)){std::cout<<"mA= 0.27 GeV, eps2 = 1e-11: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.35) && (eps2 == 1e-9)){std::cout<<"mA= 0.35 GeV, eps2 = 1e-9: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.30) && (eps2 == 1e-11)){std::cout<<"mA= 0.30 GeV, eps2 = 1e-11: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.23) && (eps2 == 1e-10)){std::cout<<"mA= 0.23 GeV, eps2 = 1e-10: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.27) && (eps2 == 1e-7)){std::cout<<"mA= 0.27 GeV, eps2 = 1e-7: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.35) && (eps2 == 1e-7)){std::cout<<"mA= 0.35 GeV, eps2 = 1e-7: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.30) && (eps2 == 1e-7)){std::cout<<"mA= 0.30 GeV, eps2 = 1e-7: "<< 6.582e-25/G<<std::endl;}
+				else if((m_A[i] == 0.23) && (eps2 == 1e-7)){std::cout<<"mA= 0.23 GeV, eps2 = 1e-7: "<< 6.582e-25/G<<std::endl;}
+*/
+				//double G2=G/6.582e-25;
+				  lifetime1 -> SetBinContent(i + 1, j + 1, 6.582e-25/G);
+				//std::cout << "m_A':   " << m_A[i] <<"   j:   " <<j << "    eps2: "<<  eps2 <<"     G: "<<G << "     1/G:  " << 6.582e-25/G<<std::endl;
+				
+				//std::cout << lifetime1 -> GetBinContent(m_A[i], eps2) <<std::endl;
+			
+			//}
+		}
+
+	}
+
+	double mass = 0.23;
+	eps2 = 1e-7;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2))  <<std::endl;
+
+	 mass = 0.27;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2))  <<std::endl;
+
+	 mass = 0.30;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2) + hadrons_width(R_mu[8], lepton_width(mass, m_mu, eps2)))  <<std::endl;
+
+	 mass = 0.35;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2) + hadrons_width(R_mu[13], lepton_width(mass, m_mu, eps2)))  <<std::endl;
+
+	mass = 0.23;
+	eps2 = 1e-10;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2))  <<std::endl;
+
+	 mass = 0.27;
+	eps2 = 1e-11;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2))  <<std::endl;
+
+	 mass = 0.30;
+	eps2 = 1e-11;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2) + hadrons_width(R_mu[8], lepton_width(mass, m_mu, eps2)))  <<std::endl;
+
+	 mass = 0.35;
+	eps2 = 1e-9;
+	std::cout<< (lepton_width(mass, m_e, eps2) + lepton_width(mass, m_mu, eps2) + hadrons_width(R_mu[13], lepton_width(mass, m_mu, eps2)))  <<std::endl;
+
+/*
+	for(int i=0;i<N;i++){
+
+		for(double j=0; j<increment; j++){
+
+			eps2 = epsilon2 + j;// * eps2_step;
 
 			G_mu = lepton_width(m_A[i], m_mu, eps2);
 			G_e = lepton_width(m_A[i], m_e, eps2);
@@ -227,36 +346,56 @@ int main() {
 
 			}
 
-			lifetime1 -> SetBinContent(m_A[i], eps2, 1.0/G);
+			std::cout << "m_A':   " << m_A[i] <<"   j:   " <<j << "    eps2: "<<  eps2 <<"     G: "<<G <<std::endl;
+			std::cout << 6.582e-25/G<<std::endl;
+			std::cout << lifetime1 -> GetBinContent(m_A[i], eps2) <<std::endl;
 
 		}
 
 	}
 
+/*
+	for(int i=0;i<N;i++){
+
+		for(int iPow=0; iPow<iPowMax; iPow++){
+
+			for(double iEps=0; iEps<iEpsMax; iEps++){
+
+				eps2=pow(10,iPow)*epsilon2*(1.0+iEps);
+
+				G_mu = lepton_width(m_A[i], m_mu, eps2);
+				G_e = lepton_width(m_A[i], m_e, eps2);
+				G_h = hadrons_width(R_mu[i], G_mu);
+
+				if(m_A[i] < 2.0*m_tau){
+
+					G = G_e + G_mu + G_h + Gamma_inv;
+
+				}
+				else{
+		
+					G = G_e + G_mu + lepton_width(m_A[i], m_tau, eps2) + G_h + Gamma_inv;
+
+				}
+
+				double G2=G/6.582e-25;
+
+				std::cout <<"m_A':   " << m_A[i] <<"    iPow:   " << iPow << "    iEps:   " << iEps <<"    eps2: "<<  eps2 <<std::endl;
+				std::cout << 1/G2 <<std::endl;
+				std::cout << lifetime1 -> GetBinContent(m_A[i], eps2) <<std::endl;
+
+			}
+
+		}
+
+	}
+*/
+	//gStyle->SetOptStat(0);
+
 	TCanvas *c1=new TCanvas("c1","",600,600);
 
-	lifetime1 -> Draw("COLZ");
-
-	c1->Modified();
-	c1->Update();
-
-	c1->Print("project81_lifetime1.pdf","pdf");
-
-	
-  	TH1D*lifetime2=new TH1D("h1","Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}",200, 0.3, 200);
-	lifetime2 = lifetime1->ProjectionY("#epsilon^{2} projection");
-	lifetime2->SetTitle("Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}");
-  	lifetime2->GetXaxis()->SetTitle("#epsilon^{2}");
-  	lifetime2->GetYaxis()->SetTitle("arbitrary units");
-	lifetime2->GetYaxis()->SetTitleOffset(0.8);
-
-	c1->Modified();
-	c1->Update();
-
-	c1->Print("project81_lifetime2.pdf","pdf");	
-
-
-	gPad->SetLogy();
+	gPad->SetRightMargin(0.13);
+	//gPad->SetLeftMargin(0.13);
 
 	TGraph *check = new TGraph(N, &m_A[0], &R_mu[0]);
 	check -> SetMarkerColor(kBlue);
@@ -273,44 +412,123 @@ int main() {
 	c1->Update();
 
 	c1->Print("project81_RmuvsmA.pdf","pdf");
+	//c1->Print("project81_RmuvsmA.C");
+
+
+	lifetime1 -> Draw("COLZ");
+	//lifetime1 -> Draw("COLZ");
+
+	c1->Modified();
+	c1->Update();
+
+	//c1->Print("project81_lifetime1.pdf","pdf");
+	//c1->Print("project81_lifetime1.C");
+
+	
+  	/*TH1D*lifetime2=new TH1D("h1","Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}",200, 0.3, 200);
+	lifetime2 = lifetime1->ProjectionY("#epsilon^{2} projection");
+	lifetime2->SetTitle("Diagram showing the lifetime of Dark Photon based on its mass and #epsilon^{2}");
+  	lifetime2->GetXaxis()->SetTitle("#epsilon^{2}");
+  	lifetime2->GetYaxis()->SetTitle("arbitrary units");
+	lifetime2->GetYaxis()->SetTitleOffset(0.8);*/
 
 	gPad->SetLogx();
+	gPad->SetLogy();
+	gPad->SetLogz();
+	
+	/*
+	double contour[4];
+	contour[0] = 1e-3;
+	contour[1] = 1e-2;
+	contour[2] = 1e-1;
+	contour[3] = 10;
+	lifetime1 -> SetContour(4, contour);
+	*/
+	
+	double contour[6];// = {1.2e-14, 1.7e-14, 5e-14, 1.5e-13};
+	contour[0] = 1.2e-14;
+	contour[1] = 1.7e-14;
+	contour[2] = 5e-14;
+	contour[3] = 5e-13;
+	contour[4] = 1.6e-12;
+	contour[5] = 5e-11;
+	lifetime1 -> SetContour(6, contour);
+	
+	lifetime1 -> Draw("CONT1Z");
+	//lifetime1 -> Draw("CONT Z LIST");
+
+	gPad->Update();
+	gStyle->SetOptStat(0);
+
+	c1->Modified();
+	c1->Update();
+
+	c1->Print("project81_lifetime2.pdf","pdf");	
+	//c1->Print("project81_lifetime2.C");	
+/*
+	TObjArray *contours = gROOT->GetListOfSpecials()->FindObject("contours");
+	Int_t ncontours     = contours->GetSize();
+
+	for(int i=0;i<ncontours;i++){
+		TList *list         = (TList*)contours->At(i);
+		TGraph *gr1 = (TGraph*)list->First();
+		std::cout<<"contours: "<<gr1[0, 0]<<std::endl;
+
+	}
+*/
+	
 
 	TGraph *width1 = new TGraph(N, &m_A[0], Gamma);
 	width1 -> SetMarkerColor(kBlue);
 	width1 -> SetLineColor(kBlue);
+	width1->SetLineWidth(1.5);
 
 	TGraph *width_mu1 = new TGraph(N, &m_A[0], Gamma_mu);
 	width_mu1 -> SetMarkerColor(kRed);
 	width_mu1 -> SetLineColor(kRed);
+	width_mu1->SetLineWidth(1.5);
 
 	TGraph *width_e1 = new TGraph(N, &m_A[0], Gamma_e);
 	width_e1 -> SetMarkerColor(kGreen);
 	width_e1 -> SetLineColor(kGreen);
+	width_e1->SetLineWidth(1.5);
+
+	TGraph *width_tau1 = new TGraph(N, &m_A[0], Gamma_tau);
+	width_tau1 -> SetMarkerColor(kViolet);
+	width_tau1 -> SetLineColor(kViolet);
+	width_tau1->SetLineWidth(1.5);
 
 	TGraph *width_h1 = new TGraph(N, &m_A[0], Gamma_h);
 	width_h1 -> SetMarkerColor(kOrange);
 	width_h1 -> SetLineColor(kOrange);
+	width_h1->SetLineWidth(1.5);
 
 	TMultiGraph *mgr = new TMultiGraph();
 	mgr->SetTitle("Dark Photon width distribution based on its mass (#epsilon^{2} = 10^{-11})");
     	mgr->Add(width1,"pl");
     	mgr->Add(width_mu1,"pl");
     	mgr->Add(width_e1,"pl");
+	mgr->Add(width_tau1,"pl");
     	mgr->Add(width_h1,"pl");
 	mgr->Draw("ap");
 	mgr->GetXaxis()->SetTitle("m_{A'} (GeV)");
 	mgr->GetXaxis()->SetTitleOffset(1);
   	mgr->GetYaxis()->SetTitle("Width (GeV^{-1})");
 	mgr->GetYaxis()->SetTitleOffset(1.5);   
+	
 
-	TLegend *legend1 = new TLegend(0.1,0.7,0.4,0.9);
+	gStyle->SetLegendTextSize(0.05);
+  	gPad->SetLeftMargin(0.13);
+
+	TLegend *legend1 = new TLegend(0.2,0.6,0.55,0.9);
 	TLegendEntry *l11 = legend1->AddEntry("width1","#Gamma_{total}","l");	
 	l11->SetLineColor(kBlue);
 	TLegendEntry *l12 = legend1->AddEntry("width_mu1","#Gamma_{A' #rightarrow #mu^{+} #mu^{-}}","l");
 	l12->SetLineColor(kRed);
 	TLegendEntry *l13 = legend1->AddEntry("width_e1","#Gamma_{A' #rightarrow e^{+} e^{-}}","l");
 	l13->SetLineColor(kGreen);
+	TLegendEntry *l15 = legend1->AddEntry("width_tau1","#Gamma_{A' #rightarrow #tau^{+} #tau^{-}}","l");
+	l15->SetLineColor(kViolet);
 	TLegendEntry *l14 = legend1->AddEntry("width_h1","#Gamma_{A' #rightarrow hadrons}","l");
 	l14->SetLineColor(kOrange);
 	legend1->Draw();
@@ -320,6 +538,7 @@ int main() {
 	c1->Modified();
 	c1->Update();
 	c1->Print("project81_width1.pdf","pdf");
+	//c1->Print("project81_width1.C");
 
 
 	TGraph *width2 = new TGraph(N, &m_A[0], Gamma1);
@@ -334,6 +553,10 @@ int main() {
 	width_e2 -> SetMarkerColor(kGreen);
 	width_e2 -> SetLineColor(kGreen);
 
+	TGraph *width_tau2 = new TGraph(N, &m_A[0], Gamma_tau1);
+	width_tau2 -> SetMarkerColor(kViolet);
+	width_tau2 -> SetLineColor(kViolet);
+
 	TGraph *width_h2 = new TGraph(N, &m_A[0], Gamma_h1);
 	width_h2 -> SetMarkerColor(kOrange);
 	width_h2 -> SetLineColor(kOrange);
@@ -343,6 +566,7 @@ int main() {
     	mgr2->Add(width2,"pl");
     	mgr2->Add(width_mu2,"pl");
     	mgr2->Add(width_e2,"pl");
+	mgr2->Add(width_tau2,"pl");
     	mgr2->Add(width_h2,"pl");
 	mgr2->Draw("ap");
 	mgr2->GetXaxis()->SetTitle("m_{A'} (GeV)");
@@ -350,13 +574,15 @@ int main() {
   	mgr2->GetYaxis()->SetTitle("Width/#epsilon^{2} (GeV^{-1})");
 	mgr2->GetYaxis()->SetTitleOffset(1.5);   
 
-	TLegend *legend2 = new TLegend(0.1,0.7,0.4,0.9);
+	TLegend *legend2 = new TLegend(0.2,0.6,0.55,0.9);
 	TLegendEntry *l21 = legend2->AddEntry("width2","#Gamma_{total}","l");	
 	l21->SetLineColor(kBlue);
 	TLegendEntry *l22 = legend2->AddEntry("width_mu2","#Gamma_{A' #rightarrow #mu^{+} #mu^{-}}","l");
 	l22->SetLineColor(kRed);
 	TLegendEntry *l23 = legend2->AddEntry("width_e2","#Gamma_{A' #rightarrow e^{+} e^{-}}","l");
 	l23->SetLineColor(kGreen);
+	TLegendEntry *l25 = legend2->AddEntry("width_tau2","#Gamma_{A' #rightarrow #tau^{+} #tau^{-}}","l");
+	l25->SetLineColor(kViolet);
 	TLegendEntry *l24 = legend2->AddEntry("width_h2","#Gamma_{A' #rightarrow hadrons}","l");
 	l24->SetLineColor(kOrange);
 	legend2->Draw();
@@ -366,38 +592,47 @@ int main() {
 	c1->Modified();
 	c1->Update();
 	c1->Print("project81_width2.pdf","pdf");
+	//c1->Print("project81_width2.C");
 
+	gStyle->SetLegendTextSize(0.04);
 
 	TGraph *branching1 = new TGraph(N, &m_A[0], Br1);
-	branching1 -> SetMarkerColor(kBlue);
-	branching1 -> SetLineColor(kBlue);
+	branching1 -> SetMarkerColor(kRed);
+	branching1 -> SetLineColor(kRed);
 
 	TGraph *branching2 = new TGraph(N, &m_A[0], Br2);
-	branching2 -> SetMarkerColor(kRed);
-	branching2 -> SetLineColor(kRed);
+	branching2 -> SetMarkerColor(kGreen);
+	branching2 -> SetLineColor(kGreen);
 
 	TGraph *branching3 = new TGraph(N, &m_A[0], Br3);
-	branching3 -> SetMarkerColor(kGreen);
-	branching3 -> SetLineColor(kGreen);
+	branching3 -> SetMarkerColor(kViolet);
+	branching3 -> SetLineColor(kViolet);
+
+	TGraph *branching4 = new TGraph(N, &m_A[0], Br4);
+	branching4 -> SetMarkerColor(kOrange);
+	branching4 -> SetLineColor(kOrange);
 
 	TMultiGraph *mgr3 = new TMultiGraph();
 	mgr3->SetTitle("Dark Photon branching ratios vs its mass");
     	mgr3->Add(branching1,"pl");
     	mgr3->Add(branching2,"pl");
     	mgr3->Add(branching3,"pl");
+	mgr3->Add(branching4,"pl");
 	mgr3->Draw("ap");
 	mgr3->GetXaxis()->SetTitle("m_{A'} (GeV)");
 	mgr3->GetXaxis()->SetTitleOffset(1);
   	mgr3->GetYaxis()->SetTitle("Br(A')");
 	mgr3->GetYaxis()->SetTitleOffset(1);   
 
-	TLegend *legend3 = new TLegend(0.1,0.3,0.4,0.5);
+	TLegend *legend3 = new TLegend(0.2,0.1,0.5,0.3);
 	TLegendEntry *l31 = legend3->AddEntry("branching1","Br(A' #rightarrow #mu^{-} #mu^{+})","l");	
-	l31->SetLineColor(kBlue);
+	l31->SetLineColor(kRed);
 	TLegendEntry *l32 = legend3->AddEntry("branching2","Br(A' #rightarrow e^{-} e^{+})","l");
-	l32->SetLineColor(kRed);
-	TLegendEntry *l33 = legend3->AddEntry("branching3","Br(A' #rightarrow hadrons)","l");
-	l33->SetLineColor(kGreen);
+	l32->SetLineColor(kGreen);
+	TLegendEntry *l33 = legend3->AddEntry("branching3","Br(A' #rightarrow #tau^{-} #tau^{+})","l");
+	l33->SetLineColor(kViolet);
+	TLegendEntry *l34 = legend3->AddEntry("branching4","Br(A' #rightarrow hadrons)","l");
+	l34->SetLineColor(kOrange);
 	legend3->Draw();
 
 	mgr3->GetXaxis()->SetRangeUser(0.3, 1.6);
@@ -405,15 +640,18 @@ int main() {
 	c1->Modified();
 	c1->Update();
 	c1->Print("project81_Abranching1.pdf","pdf");
+	//c1->Print("project81_Abranching1.C");
 
 	//gPad->SetLogx();
 
 	mgr3->GetXaxis()->SetRangeUser(0.3, 200);
+	mgr3->GetYaxis()->SetRangeUser(1e-4, 5e0);
 	//branching->Draw("AP");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project81_Abranching.pdf","pdf");
+	//c1->Print("project81_Abranching.C");
 
 	//delete file_in;
 	file.close();

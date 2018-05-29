@@ -1,0 +1,2 @@
+Configuring LCGCMT 84 from /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCGCMT/LCGCMT_84
+/var/lib/condor/execute/dir_18494/condor_exec.exe: line 41: ./gs_project65: No such file or directory

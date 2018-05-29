@@ -1,0 +1,8 @@
+Table showing signal significance of signal muons passing various cuts: 
+S(gamma cuts(pt+p+eta))   B_EM(gamma cuts(pt+p+eta))   B(gamma cuts(pt+p+eta))   misID(gamma cuts(pt+p+eta))   S/B_EM(gamma cuts(pt+p+eta))  S/sqrt(B+misID)(gamma cuts(pt+p+eta))  
+0.00000e+00   0.00000e+00   6.00000e-06   0.00000e+00   -nan   0.00000e+00 
+Candidate type    Total entries    After eta mass cut    After A mass cut: 
+S    			   68373    		427   			0 
+SMB    		   69160    		459    			0 
+B    			   3791    		30    			1 
+misID    		   909857    		909857    			0 

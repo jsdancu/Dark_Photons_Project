@@ -1,0 +1,2 @@
+Configuring LCGCMT 84 from /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCGCMT/LCGCMT_84
+./gs_project74: error while loading shared libraries: libtbb.so.2: cannot open shared object file: No such file or directory

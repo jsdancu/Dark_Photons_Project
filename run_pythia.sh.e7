@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/cvmfs/lhcb.cern.ch/lib/lhcb/LBSCRIPTS/LBSCRIPTS_v9r2p4/InstallArea/scripts/lb-run", line 38, in <module>
+    SP2().main()
+  File "/cvmfs/lhcb.cern.ch/lib/lhcb/LBSCRIPTS/LBSCRIPTS_v9r2p4/InstallArea/python/EnvConfig/__init__.py", line 63, in __init__
+    self._parse_args(args)
+  File "/cvmfs/lhcb.cern.ch/lib/lhcb/LBSCRIPTS/LBSCRIPTS_v9r2p4/InstallArea/python/LbConfiguration/SP2/script.py", line 267, in _parse_args
+    self.project, self.version = self.cmd.pop(0).split('/')
+ValueError: too many values to unpack

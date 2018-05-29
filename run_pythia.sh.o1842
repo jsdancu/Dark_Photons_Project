@@ -1,0 +1,15 @@
+********************************************************************************
+*                          ---- LHCb Login v9r2 ----                           *
+*      Building with gcc49 on slc6 x86_64 system (x86_64-slc6-gcc49-opt)       *
+********************************************************************************
+ --- User_release_area is set to /home/user72/cmtuser
+ --- LHCBPROJECTPATH is set to:
+    /cvmfs/lhcb.cern.ch/lib/lhcb
+    /cvmfs/lhcb.cern.ch/lib/lcg/releases
+    /cvmfs/lhcb.cern.ch/lib/lcg/app/releases
+    /cvmfs/lhcb.cern.ch/lib/lcg/external
+--------------------------------------------------------------------------------
+Using CMTPROJECTPATH = '/cvmfs/lhcb.cern.ch/lib/lhcb:/cvmfs/lhcb.cern.ch/lib/lcg/releases:/cvmfs/lhcb.cern.ch/lib/lcg/app/releases:/cvmfs/lhcb.cern.ch/lib/lcg/external'
+Environment for LCGCMT 84 ready.
+(Compat v1r19 from /cvmfs/lhcb.cern.ch/lib/lhcb/COMPAT/COMPAT_v1r19,
+ LCGCMT 84 from /cvmfs/lhcb.cern.ch/lib/lcg/releases/LCGCMT/LCGCMT_84)

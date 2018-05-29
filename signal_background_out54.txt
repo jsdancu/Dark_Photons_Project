@@ -1,0 +1,19 @@
+Total signal entries:  69441.000000 
+After pt cuts: 1849.000000 
+After pt & p cuts:  625.000000 
+After pt, p & pseudorapidity cuts:  270.000000 
+After mass cut:  270.000000 
+ After all cuts (including photons):  80.000000 
+ 
+Total misID pion entries:  238768043.000000 
+After pt, p & pseudorapidity cuts:  213329782.000000 
+After mass cut:  124403.000000 
+After all cuts (including photons):  2555.000000 
+ 
+Signal significance of signal entries: 
+After pt cuts: 2.662692e-02 
+After pt & p cuts:  9.000446e-03 
+After pt, p & pseudorapidity cuts:  3.888193e-03 
+After mass cut:  3.888193e-03 
+ After all cuts (including photons):  1.152057e-03 
+ 

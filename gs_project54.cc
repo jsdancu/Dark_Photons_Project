@@ -74,7 +74,18 @@ double eta(vect *v, Long64_t i){
 
 }
 
-vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D *muon_invmass, TH1D *muongamma_invmass_mother, TH1D *muon_invmass_mother, TH1D *eta_invmass_mothers, TH1D *muon_invmass_cuts_mother, TH1D *muon_invmass_cuts_mother2, TH1D *eta_invmass_cuts_mother, TH1D *eta_invmass_cuts_mother2, TH1D *muon_invmass_c3_mother, TH1D *eta_invmass_c3_mother, TH1D *muon_invmass_cuts_bkg, TH1D *muon_invmass_cuts_bkg2, TH1D *eta_invmass_cuts_bkg, TH1D *eta_invmass_cuts_bkg2, TH1D *muon_invmass_c3_bkg, TH1D *eta_invmass_c3_bkg, TH1D *muon_pt_mother, TH1D *muon_pt_bkg, TH1D *muon_ptcut_mother, TH1D *muon_ptetacut_mother, TH1D *muon_ptetamasscut_mother, TH1D *muon_p_mother, TH1D *muon_p_bkg, TH1D *muon_pcut_mother, TH1D *muon_petacut_mother, TH1D *muon_petamasscut_mother, TH2D *muon_ptvsp_mother, TH2D *muon_ptvsp_cuts_mother, TH2D *muon_ptvsp_c1_mother, TH2D *muon_ptvsp_c2_mother, TH2D *muon_ptvsp_c3_mother, TH2D *gamma_ptvsp_mother, TH2D *gamma_ptvsp_cuts_mother, TH2D *gamma_ptvsp_c1_mother, TH2D *gamma_ptvsp_c2_mother, TH2D *gamma_ptvsp_c3_mother, TH2D *muon_ptvseta_mother, TH2D *muon_ptvseta_cuts_mother, TH2D *muon_ptvseta_c1_mother, TH2D *muon_ptvseta_c2_mother, TH2D *muon_ptvseta_c3_mother, TH2D *gamma_ptvseta_mother, TH2D *gamma_ptvseta_cuts_mother, TH2D *gamma_ptvseta_c1_mother, TH2D *gamma_ptvseta_c2_mother, TH2D *gamma_ptvseta_c3_mother, TH1D *muon_eta_mother, TH1D *gamma_pt_mother, TH1D *gamma_pt_bkg, TH1D *gamma_pt_c3_bkg, TH1D *gamma_pt_c4_bkg, TH1D *gamma_pt_c5_bkg, TH1D *gamma_ptcut_mother, TH1D *gamma_ptetacut_mother, TH1D *gamma_ptetamasscut_mother, TH1D *gamma_ptallcut_mother, TH1D *gamma_p_mother, TH1D *gamma_p_bkg, TH1D *gamma_p_c3_bkg, TH1D *gamma_p_c4_bkg, TH1D *gamma_p_c5_bkg, TH1D *gamma_pcut_mother, TH1D *gamma_petacut_mother, TH1D *gamma_petamasscut_mother, TH1D *gamma_pallcut_mother, TH1D *gamma_eta_mother, TH1D *mu_number_event, TH1D *gamma_number_event, TH1D *total_number_event, TH1D *mugamma_combnumber_event, TH1D *gamma_fake){
+double misID_rate(double pl, double alpha, double beta, double gamma){
+
+	double misid = 1.0 - exp(-alpha/pl) + beta * pl + gamma;
+
+	return misid;
+
+}
+
+
+//vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, double mu_ptcut, double mu_pcut, double eta_cut1, double eta_cut2, double gamma_ptcut, double gamma_pcut, TH1D *eta_invmass, TH1D *muon_invmass, TH1D *muongamma_invmass_mother, TH1D *muon_invmass_mother, TH1D *eta_invmass_mothers, TH1D *muon_invmass_cuts_mother, TH1D *muon_invmass_cuts_mother2, TH1D *eta_invmass_cuts_mother, TH1D *eta_invmass_cuts_mother2, TH1D *muon_invmass_c3_mother, TH1D *eta_invmass_c3_mother, TH1D *muon_invmass_cuts_bkg, TH1D *muon_invmass_cuts_bkg2, TH1D *eta_invmass_cuts_bkg, TH1D *eta_invmass_cuts_bkg2, TH1D *muon_invmass_c3_bkg, TH1D *eta_invmass_c3_bkg, TH1D *muon_pt_mother, TH1D *muon_pt_bkg, TH1D *muon_ptcut_mother, TH1D *muon_ptetacut_mother, TH1D *muon_ptetamasscut_mother, TH1D *muon_p_mother, TH1D *muon_p_bkg, TH1D *muon_pcut_mother, TH1D *muon_petacut_mother, TH1D *muon_petamasscut_mother, TH2D *muon_ptvsp_mother, TH2D *muon_ptvsp_cuts_mother, TH2D *muon_ptvsp_c1_mother, TH2D *muon_ptvsp_c2_mother, TH2D *muon_ptvsp_c3_mother, TH2D *gamma_ptvsp_mother, TH2D *gamma_ptvsp_cuts_mother, TH2D *gamma_ptvsp_c1_mother, TH2D *gamma_ptvsp_c2_mother, TH2D *gamma_ptvsp_c3_mother, TH2D *muon_ptvseta_mother, TH2D *muon_ptvseta_cuts_mother, TH2D *muon_ptvseta_c1_mother, TH2D *muon_ptvseta_c2_mother, TH2D *muon_ptvseta_c3_mother, TH2D *gamma_ptvseta_mother, TH2D *gamma_ptvseta_cuts_mother, TH2D *gamma_ptvseta_c1_mother, TH2D *gamma_ptvseta_c2_mother, TH2D *gamma_ptvseta_c3_mother, TH1D *muon_eta_mother, TH1D *gamma_pt_mother, TH1D *gamma_pt_bkg, TH1D *gamma_pt_c3_bkg, TH1D *gamma_pt_c4_bkg, TH1D *gamma_pt_c5_bkg, TH1D *gamma_ptcut_mother, TH1D *gamma_ptetacut_mother, TH1D *gamma_ptetamasscut_mother, TH1D *gamma_ptallcut_mother, TH1D *gamma_p_mother, TH1D *gamma_p_bkg, TH1D *gamma_p_c3_bkg, TH1D *gamma_p_c4_bkg, TH1D *gamma_p_c5_bkg, TH1D *gamma_pcut_mother, TH1D *gamma_petacut_mother, TH1D *gamma_petamasscut_mother, TH1D *gamma_pallcut_mother, TH1D *gamma_eta_mother, TH1D *mu_number_event, TH1D *gamma_number_event, TH1D *total_number_event, TH1D *mugamma_combnumber_event, TH1D *gamma_fake){
+
+void analyze_event(FILE *file_out1, vect *v, vect2 *vn, double mu_ptcut, double mu_pcut, double eta_cut1, double eta_cut2, double gamma_ptcut, double gamma_pcut, TH1D *eta_invmass, TH1D *muon_invmass, TH1D *muongamma_invmass_mother, TH1D *muon_invmass_mother, TH1D *eta_invmass_mothers, TH1D *muon_invmass_cuts_mother, TH1D *muon_invmass_cuts_mother2, TH1D *eta_invmass_cuts_mother, TH1D *eta_invmass_cuts_mother2, TH1D *muon_invmass_c3_mother, TH1D *eta_invmass_c3_mother, TH1D *muon_invmass_cuts_sigbkg, TH1D *muon_invmass_cuts_sigbkg2, TH1D *eta_invmass_cuts_sigbkg, TH1D *eta_invmass_cuts_sigbkg2, TH1D *muon_invmass_c3_sigbkg, TH1D *eta_invmass_c3_sigbkg, TH1D *muon_invmass_cuts_bkg, TH1D *muon_invmass_cuts_bkg2, TH1D *eta_invmass_cuts_bkg, TH1D *eta_invmass_cuts_bkg2, TH1D *muon_invmass_c3_bkg, TH1D *eta_invmass_c3_bkg, TH1D *muon_pt_mother, TH1D *muon_pt_bkg, TH1D *muon_ptcut_mother, TH1D *muon_ptetacut_mother, TH1D *muon_ptetamasscut_mother, TH1D *muon_p_mother, TH1D *muon_p_bkg, TH1D *muon_pcut_mother, TH1D *muon_petacut_mother, TH1D *muon_petamasscut_mother, TH1D *muon_eta_mother, TH1D *gamma_pt_mother, TH1D *gamma_pt_bkg, TH1D *gamma_pt_c3_bkg, TH1D *gamma_pt_c4_bkg, TH1D *gamma_pt_c5_bkg, TH1D *gamma_ptcut_mother, TH1D *gamma_ptetacut_mother, TH1D *gamma_ptetamasscut_mother, TH1D *gamma_ptallcut_mother, TH1D *gamma_p_mother, TH1D *gamma_p_bkg, TH1D *gamma_p_c3_bkg, TH1D *gamma_p_c4_bkg, TH1D *gamma_p_c5_bkg, TH1D *gamma_pcut_mother, TH1D *gamma_petacut_mother, TH1D *gamma_petamasscut_mother, TH1D *gamma_pallcut_mother, TH1D *gamma_eta_mother, TH1D *mu_number_event, TH1D *gamma_number_event, TH1D *total_number_event, TH1D *mugamma_combnumber_event, TH1D *gamma_fake){
 
 	double inv_mass, mu_invmass, pt1, pt2, pt3, p1, p2, p3, eta1, eta2, eta3;
 
@@ -141,22 +152,37 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 							eta3 = eta(v, k);	
 
 
-							if((pt1>0.5) && (pt2>0.5) && (p1>10.0) && (p2>10.0) && (eta1>2.0) && (eta1<4.5) && (eta2>2.0) && (eta2<4.5)){
+							if((pt1>mu_ptcut) && (pt2>mu_ptcut) && (p1>mu_pcut) && (p2>mu_pcut) && (eta1>eta_cut1) && (eta1<eta_cut2) && (eta2>eta_cut1) && (eta2<eta_cut2)){
 
-								eta_invmass_c3_bkg->Fill(inv_mass);
-								muon_invmass_c3_bkg->Fill(mu_invmass);
+								eta_invmass_c3_sigbkg->Fill(inv_mass);
+								muon_invmass_c3_sigbkg->Fill(mu_invmass);
+
+								/*if(!((v->mother1[i] == v->mother1[j]) && (v->mother1[i] == v->mother1[k]) && (v->mother2[i] == v->mother2[j]) && (v->mother2[i] == v->mother2[k]) && (v->motherid1[i] == 221))){
+									eta_invmass_c3_bkg->Fill(inv_mass);
+									muon_invmass_c3_bkg->Fill(mu_invmass);
+								}*/
 
 								if((inv_mass < m_eta+dm_eta) && (inv_mass> m_eta-dm_eta)){
 
-									eta_invmass_cuts_bkg->Fill(inv_mass);
-									muon_invmass_cuts_bkg->Fill(mu_invmass);
+									eta_invmass_cuts_sigbkg->Fill(inv_mass);
+									muon_invmass_cuts_sigbkg->Fill(mu_invmass);
+		
+									if(!((v->mother1[i] == v->mother1[j]) && (v->mother1[i] == v->mother1[k]) && (v->mother2[i] == v->mother2[j]) && (v->mother2[i] == v->mother2[k]) && (v->motherid1[i] == 221))){
+										eta_invmass_cuts_bkg->Fill(inv_mass);
+										muon_invmass_cuts_bkg->Fill(mu_invmass);
+									}
 
-									if((pt3>0.5) && (p3>10.0) && (eta3>2.0) && (eta3<4.5)){
+									if((pt3>gamma_ptcut) && (p3>gamma_pcut) && (eta3>eta_cut1) && (eta3<eta_cut2)){
 
-										eta_invmass_cuts_bkg2->Fill(inv_mass);
-										muon_invmass_cuts_bkg2->Fill(mu_invmass);
+										eta_invmass_cuts_sigbkg2->Fill(inv_mass);
+										muon_invmass_cuts_sigbkg2->Fill(mu_invmass);
 
-										if(v->motherid1[k] != 221){
+										if(!((v->mother1[i] == v->mother1[j]) && (v->mother1[i] == v->mother1[k]) && (v->mother2[i] == v->mother2[j]) && (v->mother2[i] == v->mother2[k]) && (v->motherid1[i] == 221))){
+											eta_invmass_cuts_bkg2->Fill(inv_mass);
+											muon_invmass_cuts_bkg2->Fill(mu_invmass);
+										}
+
+										if((v->motherid1[k] != 221) || ((v->motherid1[k] == 221) && (v->mother1[i] != v->mother1[k]) && (v->mother1[j] != v->mother1[k]))){
 
 											gamma_fake->Fill(v->motherid1[k]);
 										
@@ -194,25 +220,25 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 									eta_invmass_mothers->Fill(inv_mass);
 
 									//Plot pt vs p 2D histogram before cuts
-									muon_ptvsp_mother->Fill(p1, pt1);
+									/*muon_ptvsp_mother->Fill(p1, pt1);
 									muon_ptvsp_mother->Fill(p2, pt2);
 									gamma_ptvsp_mother->Fill(p3, pt3);
 									muon_ptvseta_mother->Fill(pt1, eta1);
 									muon_ptvseta_mother->Fill(pt2, eta2);
-									gamma_ptvseta_mother->Fill(pt3, eta3);
+									gamma_ptvseta_mother->Fill(pt3, eta3);*/
 
-									if((pt1>0.5) && (pt2>0.5)){
+									if((pt1>mu_ptcut) && (pt2>mu_ptcut)){
 
 										++N->n[1];
 
-										muon_ptvsp_c1_mother->Fill(p1, pt1);
+										/*muon_ptvsp_c1_mother->Fill(p1, pt1);
 										muon_ptvsp_c1_mother->Fill(p2, pt2);
 										gamma_ptvsp_c1_mother->Fill(p3, pt3);
 										muon_ptvseta_c1_mother->Fill(pt1, eta1);
 										muon_ptvseta_c1_mother->Fill(pt2, eta2);
-										gamma_ptvseta_c1_mother->Fill(pt3, eta3);
+										gamma_ptvseta_c1_mother->Fill(pt3, eta3);*/
 
-										if((p1>10.0) && (p2>10.0)){
+										if((p1>mu_pcut) && (p2>mu_pcut)){
 
 											++N->n[2];
 
@@ -223,14 +249,14 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 											muon_pcut_mother->Fill(p2);
 											gamma_pcut_mother->Fill(p3);
 
-											muon_ptvsp_c2_mother->Fill(p1, pt1);
+											/*muon_ptvsp_c2_mother->Fill(p1, pt1);
 											muon_ptvsp_c2_mother->Fill(p2, pt2);
 											gamma_ptvsp_c2_mother->Fill(p3, pt3);
 											muon_ptvseta_c2_mother->Fill(pt1, eta1);
 											muon_ptvseta_c2_mother->Fill(pt2, eta2);
-											gamma_ptvseta_c2_mother->Fill(pt3, eta3);
+											gamma_ptvseta_c2_mother->Fill(pt3, eta3);*/
 
-											if((eta1>2.0) && (eta1<4.5) && (eta2>2.0) && (eta2<4.5))
+											if((eta1>eta_cut1) && (eta1<eta_cut2) && (eta2>eta_cut1) && (eta2<eta_cut2))
 											{
 
 												++N->n[3];
@@ -242,12 +268,12 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 												muon_petacut_mother->Fill(p2);
 												gamma_petacut_mother->Fill(p3);
 
-												muon_ptvsp_c3_mother->Fill(p1, pt1);
+												/*muon_ptvsp_c3_mother->Fill(p1, pt1);
 												muon_ptvsp_c3_mother->Fill(p2, pt2);
 												gamma_ptvsp_c3_mother->Fill(p3, pt3);
 												muon_ptvseta_c3_mother->Fill(pt1, eta1);
 												muon_ptvseta_c3_mother->Fill(pt2, eta2);
-												gamma_ptvseta_c3_mother->Fill(pt3, eta3);
+												gamma_ptvseta_c3_mother->Fill(pt3, eta3);*/
 
 												muon_invmass_c3_mother->Fill(mu_invmass);
 												eta_invmass_c3_mother->Fill(inv_mass);
@@ -264,18 +290,18 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 													gamma_petamasscut_mother->Fill(p3);
 
 													//Plot pt vs p 2D histogram after all cuts
-													muon_ptvsp_cuts_mother->Fill(p1, pt1);
+													/*muon_ptvsp_cuts_mother->Fill(p1, pt1);
 													muon_ptvsp_cuts_mother->Fill(p2, pt2);
 													gamma_ptvsp_cuts_mother->Fill(p3, pt3);
 													muon_ptvseta_cuts_mother->Fill(pt1, eta1);
 													muon_ptvseta_cuts_mother->Fill(pt2, eta2);
-													gamma_ptvseta_cuts_mother->Fill(pt3, eta3);
+													gamma_ptvseta_cuts_mother->Fill(pt3, eta3);*/
 
 													muon_invmass_cuts_mother->Fill(mu_invmass);
 													eta_invmass_cuts_mother->Fill(inv_mass);
 
 												
-													if((pt3>0.5) && (p3>10.0) && (eta3>2.0) && (eta3<4.5)){
+													if((pt3>gamma_ptcut) && (p3>gamma_pcut) && (eta3>eta_cut1) && (eta3<eta_cut2)){
 
 														++N->n[5];
 
@@ -310,12 +336,13 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 								muon_p_bkg->Fill(p2);
 
 							}
-							else if(v->motherid1[k] != 221){
+							//else if((v->mother1[i] != v->mother1[j]) && (v->mother1[i] != v->mother1[k]) && (v->mother1[k] != v->mother1[j]) && (v->motherid1[k] != 221)){
+							else if((v->motherid1[k] != 221) || ((v->motherid1[k] == 221) && (v->mother1[i] != v->mother1[k]) && (v->mother1[j] != v->mother1[k]))){
 
 								gamma_pt_bkg->Fill(pt3);
 								gamma_p_bkg->Fill(p3);
 
-								if((pt1>0.5) && (pt2>0.5) && (p1>10.0) && (p2>10.0) && (eta1>2.0) && (eta1<4.5) && (eta2>2.0) && (eta2<4.5)){
+								if((pt1>mu_ptcut) && (pt2>mu_ptcut) && (p1>mu_pcut) && (p2>mu_pcut) && (eta1>eta_cut1) && (eta1<eta_cut2) && (eta2>eta_cut1) && (eta2<eta_cut2)){
 
 									gamma_pt_c3_bkg->Fill(pt3);
 									gamma_p_c3_bkg->Fill(p3);
@@ -325,7 +352,7 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 										gamma_pt_c4_bkg->Fill(pt3);
 										gamma_p_c4_bkg->Fill(p3);
 
-										if((pt3>0.5) && (p3>10.0) && (eta3>2.0) && (eta3<4.5)){
+										if((pt3>gamma_ptcut) && (p3>gamma_pcut) && (eta3>eta_cut1) && (eta3<eta_cut2)){
 
 											gamma_pt_c5_bkg->Fill(pt3);
 											gamma_p_c5_bkg->Fill(p3);
@@ -381,9 +408,12 @@ vect2 analyze_event(FILE *file_out1, vect *v, vect2 *vn, TH1D *eta_invmass, TH1D
 
 }
 
-void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass, TH1D *pigamma_invmass_c3, TH1D *pigamma_invmass_cuts, TH1D *pigamma_invmass_cuts2, TH1D *pi_invmass, TH1D *pi_invmass_c3, TH1D *pi_invmass_cuts, TH1D *pi_invmass_cuts2, TH1D *pi_pt, TH1D *pi_p, TH1D *pi_eta, TH1D *pi_ptcut, TH1D *pi_pcut, TH1D *pi_ptmasscut, TH1D *pi_pmasscut, TH2D *pi_ptvsp, TH2D *pi_ptvsp_cuts, TH1D *pi_number_event, TH1D *pi_combnumber_event, TH1D *total_pigamma_number_event, TH1D *pigamma_combnumber_event){
+//void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, double mu_ptcut, double mu_pcut, double eta_cut1, double eta_cut2, double gamma_ptcut, double gamma_pcut, TH1D *pigamma_invmass, TH1D *pigamma_invmass_c3, TH1D *pigamma_invmass_cuts, TH1D *pigamma_invmass_cuts2, TH1D *pi_invmass, TH1D *pi_invmass_c3, TH1D *pi_invmass_cuts, TH1D *pi_invmass_cuts2, TH1D *pi_pt, TH1D *pi_p, TH1D *pi_eta, TH1D *pi_ptcut, TH1D *pi_pcut, TH1D *pi_ptmasscut, TH1D *pi_pmasscut, TH2D *pi_ptvsp, TH2D *pi_ptvsp_cuts, TH1D *pi_number_event, TH1D *pi_combnumber_event, TH1D *total_pigamma_number_event, TH1D *pigamma_combnumber_event){
+
+void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, double alpha, double beta, double gamma, double mu_ptcut, double mu_pcut, double eta_cut1, double eta_cut2, double gamma_ptcut, double gamma_pcut, TH1D *pigamma_invmass, TH1D *pigamma_invmass_c3, TH1D *pigamma_invmass_cuts, TH1D *pigamma_invmass_cuts2, TH1D *pi_invmass, TH1D *pi_invmass_c3, TH1D *pi_invmass_cuts, TH1D *pi_invmass_cuts2, TH1D *pi_pt, TH1D *pi_p, TH1D *pi_eta, TH1D *pi_ptcut, TH1D *pi_pcut, TH1D *pi_ptmasscut, TH1D *pi_pmasscut, TH1D *pi_number_event, TH1D *pi_combnumber_event, TH1D *total_pigamma_number_event, TH1D *pigamma_combnumber_event){
 
 	double inv_mass, pion_invmass, pt_pp, pt_pn, p_pp, p_pn, eta_pp, eta_pn, pt3, p3, eta3;
+	double misid1, misid2;
 
 	Long64_t nentries = v->index.size();
 
@@ -400,7 +430,7 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 	double dm_eta = 0.02;
 
 	bool pi_n = false;
-	bool gamma = false;
+	bool gamma1 = false;
 
 	for(Long64_t i=0;i<nentries;i++){ 
 
@@ -416,7 +446,7 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 			eta_pp = eta(v, i);
 			pi_eta->Fill(eta_pp);
 
-			if((pt_pp>0.5) && (p_pp>10.0) && (eta_pp>2.0) && (eta_pp<4.5)){
+			if((pt_pp>mu_ptcut) && (p_pp>mu_pcut) && (eta_pp>eta_cut1) && (eta_pp<eta_cut2)){
 
 				//Loop through the event and find an anti-muon
 				for(Long64_t j=0;j<nentries;j++){
@@ -437,7 +467,7 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 						eta_pn = eta(v, j);
 						pi_eta->Fill(eta_pn);
 
-						if((pt_pn>0.5) && (p_pn>10.0) && (eta_pn>2.0) && (eta_pn<4.5)){
+						if((pt_pn>mu_ptcut) && (p_pn>mu_pcut) && (eta_pn>eta_cut1) && (eta_pn<eta_cut2)){
 
 							for(Long64_t k=0;k<nentries;k++){
 
@@ -446,29 +476,32 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 
 									++pigamma_combnumber;
 
-									if(gamma == false){
+									if(gamma1 == false){
 										++gamma_number;
 									}
 
 									//check that pion pair is not a K^0_S (K short) resonance 
 									if((v->motherid1[i] != 310) && (v->motherid1[j] != 310)){
 
+										//Calculating the misID rate of the "muon" candidates
+										misid1 = misID_rate(abs(v->pz[i]), alpha, beta, gamma);
+										misid2 = misID_rate(abs(v->pz[j]), alpha, beta, gamma);
+
 										//Reconstructing invariant mass of all pi+/- combinations
 										inv_mass = invmass(v, i, j, k);
 										pion_invmass = invmass2(v, i, j);
 
 										//Plot histogram of all pi+/- combinations
-										pigamma_invmass->Fill(inv_mass);
-										pi_invmass->Fill(pion_invmass);	
+										pigamma_invmass->Fill(inv_mass, misid1 * misid2);
+										pi_invmass->Fill(pion_invmass, misid1 * misid2);	
 
 										pt3 = pt(v, k);
 										p3 = p(v, k);
 										eta3 = eta(v, k);
 
 										//Plot pt vs p 2D histogram before cuts
-										pi_ptvsp->Fill(p_pp, pt_pp);
-										pi_ptvsp->Fill(p_pn, pt_pn);
-						
+										/*pi_ptvsp->Fill(p_pp, pt_pp);
+										pi_ptvsp->Fill(p_pn, pt_pn);*/
 
 										++N->n[1];
 
@@ -477,8 +510,8 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 										pi_pcut->Fill(p_pp);
 										pi_pcut->Fill(p_pn);
 
-										pigamma_invmass_c3->Fill(inv_mass);
-										pi_invmass_c3->Fill(pion_invmass);
+										pigamma_invmass_c3->Fill(inv_mass, misid1 * misid2);
+										pi_invmass_c3->Fill(pion_invmass, misid1 * misid2);
 
 										if((inv_mass < m_eta+dm_eta) && (inv_mass > m_eta-dm_eta)){
 
@@ -490,18 +523,18 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 											pi_pmasscut->Fill(p_pn);
 
 											//Plot pt vs p 2D histogram after cuts
-											pi_ptvsp_cuts->Fill(p_pp, pt_pp);
-											pi_ptvsp_cuts->Fill(p_pn, pt_pn);
+											/*pi_ptvsp_cuts->Fill(p_pp, pt_pp);
+											pi_ptvsp_cuts->Fill(p_pn, pt_pn);*/
 
-											pigamma_invmass_cuts->Fill(inv_mass);
-											pi_invmass_cuts->Fill(pion_invmass);
+											pigamma_invmass_cuts->Fill(inv_mass, misid1 * misid2);
+											pi_invmass_cuts->Fill(pion_invmass, misid1 * misid2);
 
-											if((pt3>0.5) && (p3>10.0) && (eta3>2.0) && (eta3<4.5)){
+											if((pt3>gamma_ptcut) && (p3>gamma_pcut) && (eta3>eta_cut1) && (eta3<eta_cut2)){
 
 												++N->n[3];
 
-												pigamma_invmass_cuts2->Fill(inv_mass);
-												pi_invmass_cuts2->Fill(pion_invmass);
+												pigamma_invmass_cuts2->Fill(inv_mass, misid1 * misid2);
+												pi_invmass_cuts2->Fill(pion_invmass, misid1 * misid2);
 
 											}
 
@@ -513,7 +546,7 @@ void analyze_event_pi(FILE *file_out2, vect *v, vect2 *vp, TH1D *pigamma_invmass
 								}
 
 							}
-							gamma=true;
+							gamma1=true;
 
 						}
 
@@ -577,6 +610,16 @@ int main() {
 	FILE  *file_out2 = fopen("pi_out54.txt", "w");
 	fprintf(file_out2, "Table showing signal significance of pions passing various cuts: \n");
 	fprintf(file_out2, "pt    p     eta     mass \n");
+
+	double alpha, beta, gamma;
+
+	std::ifstream file("results_out94.txt");
+    	if(file.is_open()){
+
+		file >> alpha >> beta >> gamma;
+
+	}
+
 
 	//Get trees from file
 	TTree *T1 = (TTree*)file_in->Get("T1");
@@ -674,6 +717,27 @@ int main() {
 
 	TH1D *eta_invmass_c3_mother = new TH1D("eta_invmass_c3_mother","Reconstructed invariant mass from muon pairs + #gamma p_t, p & pseudorapidity cuts (sig)",  Nbins2 - 1, Edges2);
     	eta_invmass_c3_mother -> GetXaxis()-> SetTitle("m (GeV)");
+
+
+	TH1D *muon_invmass_cuts_sigbkg = new TH1D("muon_invmass_cuts_sigbkg","Reconstructed di-muon invariant mass after all cuts (sig+bkg)", Nbins2 - 1, Edges2);
+    	muon_invmass_cuts_sigbkg -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *eta_invmass_cuts_sigbkg = new TH1D("eta_invmass_cuts_sigbkg","Reconstructed invariant mass from muon pairs + #gamma after all cuts (sig+bkg)",  Nbins2 - 1, Edges2);
+    	eta_invmass_cuts_sigbkg -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *muon_invmass_cuts_sigbkg2 = new TH1D("muon_invmass_cuts_sigbkg2","Reconstructed di-muon invariant mass after all cuts including #gamma (sig+bkg)", Nbins2 - 1, Edges2);
+    	muon_invmass_cuts_sigbkg2 -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *eta_invmass_cuts_sigbkg2 = new TH1D("eta_invmass_cuts_sigbkg2","Reconstructed invariant mass from muon pairs + #gamma after all cuts including #gamma (sig+bkg)",  Nbins2 - 1, Edges2);
+    	eta_invmass_cuts_sigbkg2 -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *muon_invmass_c3_sigbkg = new TH1D("muon_invmass_c3_sigbkg","Reconstructed muon pair invariant mass p_t, p & pseudorapidity cuts (sig+bkg)", Nbins2 - 1, Edges2);
+    	muon_invmass_cuts_sigbkg -> GetXaxis()-> SetTitle("m (GeV)");
+
+	TH1D *eta_invmass_c3_sigbkg = new TH1D("eta_invmass_c3_sigbkg","Reconstructed invariant mass from muon pairs + #gamma p_t, p & pseudorapidity cuts (sig+bkg)",  Nbins2 - 1, Edges2);
+    	eta_invmass_cuts_sigbkg -> GetXaxis()-> SetTitle("m (GeV)");
+
+
 
 	TH1D *muon_invmass_cuts_bkg = new TH1D("muon_invmass_cuts_bkg","Reconstructed di-muon invariant mass after all cuts (bkg)", Nbins2 - 1, Edges2);
     	muon_invmass_cuts_bkg -> GetXaxis()-> SetTitle("m (GeV)");
@@ -791,7 +855,7 @@ int main() {
 
 
 
-
+/*
 	TH2D *muon_ptvsp_mother = new TH2D("muon_ptvsp_mother","signal #mu^{#pm} p vs p_t distributions before cuts", 60, 0.0, 30.0, 50, 0.0, 5.0);
 	muon_ptvsp_mother -> GetXaxis()-> SetTitle("p (GeV)");
 	muon_ptvsp_mother -> GetYaxis()-> SetTitle("p_t (GeV)");
@@ -877,7 +941,7 @@ int main() {
 	TH2D *gamma_ptvseta_c3_mother = new TH2D("gamma_ptvseta_c3_mother","signal #gamma p_t vs pseudorapidity distributions after p_t, p & pseudorapidity cuts", 50, 0.0, 5.0, 45, 0.0, 4.5);
 	gamma_ptvseta_c3_mother -> GetXaxis()-> SetTitle("p_t (GeV)");
 	gamma_ptvseta_c3_mother -> GetYaxis()-> SetTitle("#eta");
-
+*/
 
 
 	TH1D *mu_number_event = new TH1D("mu_number_event","Muon-antimuon number per event", 100000, 0.0, 100000.0);
@@ -947,7 +1011,7 @@ int main() {
 
 
 
-
+/*
 	TH2D *pi_ptvsp = new TH2D("pi_ptvsp","#pi^{#pm} p vs p_t distributions before cuts", 60, 0.0, 30.0, 50, 0.0, 5.0);
 	pi_ptvsp -> GetXaxis()-> SetTitle("p (GeV)");
 	pi_ptvsp -> GetYaxis()-> SetTitle("p_t (GeV)");
@@ -989,7 +1053,7 @@ int main() {
 	TH2D *pi_ptvseta_c3 = new TH2D("pi_ptvseta_c3","#pi^{#pm} p_t vs pseudorapidity distributions after p_t, p & pseudorapidity cuts", 50, 0.0, 5.0, 45, 0.0, 4.5);
 	pi_ptvseta_c3 -> GetXaxis()-> SetTitle("p_t (GeV)");
 	pi_ptvseta_c3 -> GetYaxis()-> SetTitle("#eta");
-
+*/
 
 
 	TH1D *pi_number_event = new TH1D("pi_number_event","#pi^{#pm} number per event", 1000, 0.0, 1000.0);
@@ -1014,6 +1078,13 @@ int main() {
 	vect2* vn = new vect2;
 	vn->n = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+	double mu_ptcut = 0.5;
+	double mu_pcut = 10.0;
+	double eta_cut1 = 2.0;
+	double eta_cut2 = 4.5;
+	double gamma_ptcut = 0.5;
+	double gamma_pcut = 10.0;
+
 	//Loop through the entries of the tree
 	Long64_t nentries = T2->GetEntries();
 std::cout<<"Total number of entries: "<<nentries<<std::endl;
@@ -1037,7 +1108,9 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 			v->motherid1.push_back(motherid1_var);
 			v->motherid2.push_back(motherid2_var);
 
-			analyze_event(file_out1, v, vn, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_ptvsp_mother, muon_ptvsp_cuts_mother, muon_ptvsp_c1_mother, muon_ptvsp_c1_mother, muon_ptvsp_c2_mother, gamma_ptvsp_mother, gamma_ptvsp_cuts_mother, gamma_ptvsp_c1_mother, gamma_ptvsp_c2_mother, gamma_ptvsp_c3_mother, muon_ptvseta_mother, muon_ptvseta_cuts_mother, muon_ptvseta_c1_mother, muon_ptvseta_c2_mother, muon_ptvseta_c3_mother, gamma_ptvseta_mother, gamma_ptvseta_cuts_mother, gamma_ptvseta_c1_mother, gamma_ptvseta_c2_mother, gamma_ptvseta_c3_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
+			//analyze_event(file_out1, v, vn, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_ptvsp_mother, muon_ptvsp_cuts_mother, muon_ptvsp_c1_mother, muon_ptvsp_c1_mother, muon_ptvsp_c2_mother, gamma_ptvsp_mother, gamma_ptvsp_cuts_mother, gamma_ptvsp_c1_mother, gamma_ptvsp_c2_mother, gamma_ptvsp_c3_mother, muon_ptvseta_mother, muon_ptvseta_cuts_mother, muon_ptvseta_c1_mother, muon_ptvseta_c2_mother, muon_ptvseta_c3_mother, gamma_ptvseta_mother, gamma_ptvseta_cuts_mother, gamma_ptvseta_c1_mother, gamma_ptvseta_c2_mother, gamma_ptvseta_c3_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
+
+			analyze_event(file_out1, v, vn, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_sigbkg, muon_invmass_cuts_sigbkg2, eta_invmass_cuts_sigbkg, eta_invmass_cuts_sigbkg2, muon_invmass_c3_sigbkg, eta_invmass_c3_sigbkg, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
 
 			//clear vector
 			v->index.clear();
@@ -1057,7 +1130,9 @@ std::cout<<"Total number of entries: "<<nentries<<std::endl;
 		//checks if the new entry is from the same event as the previous one
 		else if(prev_index!=index_var){
 
-			analyze_event(file_out1, v, vn, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_ptvsp_mother, muon_ptvsp_cuts_mother, muon_ptvsp_c1_mother, muon_ptvsp_c1_mother, muon_ptvsp_c2_mother, gamma_ptvsp_mother, gamma_ptvsp_cuts_mother, gamma_ptvsp_c1_mother, gamma_ptvsp_c2_mother, gamma_ptvsp_c3_mother, muon_ptvseta_mother, muon_ptvseta_cuts_mother, muon_ptvseta_c1_mother, muon_ptvseta_c2_mother, muon_ptvseta_c3_mother, gamma_ptvseta_mother, gamma_ptvseta_cuts_mother, gamma_ptvseta_c1_mother, gamma_ptvseta_c2_mother, gamma_ptvseta_c3_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
+			//analyze_event(file_out1, v, vn, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_ptvsp_mother, muon_ptvsp_cuts_mother, muon_ptvsp_c1_mother, muon_ptvsp_c1_mother, muon_ptvsp_c2_mother, gamma_ptvsp_mother, gamma_ptvsp_cuts_mother, gamma_ptvsp_c1_mother, gamma_ptvsp_c2_mother, gamma_ptvsp_c3_mother, muon_ptvseta_mother, muon_ptvseta_cuts_mother, muon_ptvseta_c1_mother, muon_ptvseta_c2_mother, muon_ptvseta_c3_mother, gamma_ptvseta_mother, gamma_ptvseta_cuts_mother, gamma_ptvseta_c1_mother, gamma_ptvseta_c2_mother, gamma_ptvseta_c3_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
+
+			analyze_event(file_out1, v, vn, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, eta_invmass, muon_invmass, muongamma_invmass_mother, muon_invmass_mother, eta_invmass_mother, muon_invmass_cuts_mother, muon_invmass_cuts_mother2, eta_invmass_cuts_mother, eta_invmass_cuts_mother2, muon_invmass_c3_mother, eta_invmass_c3_mother, muon_invmass_cuts_sigbkg, muon_invmass_cuts_sigbkg2, eta_invmass_cuts_sigbkg, eta_invmass_cuts_sigbkg2, muon_invmass_c3_sigbkg, eta_invmass_c3_sigbkg, muon_invmass_cuts_bkg, muon_invmass_cuts_bkg2, eta_invmass_cuts_bkg, eta_invmass_cuts_bkg2, muon_invmass_c3_bkg, eta_invmass_c3_bkg, muon_pt_mother, muon_pt_bkg, muon_ptcut_mother, muon_ptetacut_mother, muon_ptetamasscut_mother, muon_p_mother, muon_p_bkg, muon_pcut_mother, muon_petacut_mother, muon_petamasscut_mother, muon_eta_mother, gamma_pt_mother, gamma_pt_bkg, gamma_pt_c3_bkg, gamma_pt_c4_bkg, gamma_pt_c5_bkg, gamma_ptcut_mother, gamma_ptetacut_mother, gamma_ptetamasscut_mother, gamma_ptallcut_mother, gamma_p_mother, gamma_p_bkg, gamma_p_c3_bkg, gamma_p_c4_bkg, gamma_p_c5_bkg, gamma_pcut_mother, gamma_petacut_mother, gamma_petamasscut_mother, gamma_pallcut_mother, gamma_eta_mother, mu_number_event, gamma_number_event, total_number_event, mugamma_combnumber_event, gamma_fake);
 
 			//clear vector
 			v->index.clear();
@@ -1117,7 +1192,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	      	T3->GetEntry(i);
 
-		if(index_var>=10000){break;}
+		//if(index_var>=10000){break;}
 
 		//checks if the entry is the very last one in the tree
 		if(i+1==nentries){
@@ -1135,7 +1210,9 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 			v->motherid1.push_back(motherid1_var);
 			v->motherid2.push_back(motherid2_var);
 
-			analyze_event_pi(file_out2, v, vp, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_ptvsp, pi_ptvsp_cuts, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
+			//analyze_event_pi(file_out2, v, vp, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_ptvsp, pi_ptvsp_cuts, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
+
+			analyze_event_pi(file_out2, v, vp, alpha, beta, gamma, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
 
 			//clear vector
 			v->index.clear();
@@ -1155,7 +1232,9 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 		//checks if the new entry is from the same event as the previous one
 		else if(prev_index!=index_var){
 
-			analyze_event_pi(file_out2, v, vp, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_ptvsp, pi_ptvsp_cuts, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
+			//analyze_event_pi(file_out2, v, vp, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_ptvsp, pi_ptvsp_cuts, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
+
+			analyze_event_pi(file_out2, v, vp, alpha, beta, gamma, mu_ptcut, mu_pcut, eta_cut1, eta_cut2, gamma_ptcut, gamma_pcut, pigamma_invmass, pigamma_invmass_c3, pigamma_invmass_cuts, pigamma_invmass_cuts2, pi_invmass, pi_invmass_c3, pi_invmass_cuts, pi_invmass_cuts2, pi_pt, pi_p, pi_eta, pi_ptcut, pi_pcut, pi_ptmasscut, pi_pmasscut, pi_number_event, pi_combnumber_event, total_pigamma_number_event, pigamma_combnumber_event);
 
 			//clear vector
 			v->index.clear();
@@ -1209,7 +1288,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_pt_mother->GetEntries();
 	muon_pt_mother->Scale(1.0 / nentries, "width");
-	muon_pt_mother->Draw();
+	muon_pt_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1217,7 +1296,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_pt_bkg->GetEntries();
 	muon_pt_bkg->Scale(1.0 / nentries, "width");
-	muon_pt_bkg->Draw();
+	muon_pt_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1225,7 +1304,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_ptcut_mother->GetEntries();
 	muon_ptcut_mother->Scale(1.0 / nentries, "width");
-	muon_ptcut_mother->Draw();
+	muon_ptcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1233,7 +1312,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_ptetacut_mother->GetEntries();
 	muon_ptetacut_mother->Scale(1.0 / nentries, "width");
-	muon_ptetacut_mother->Draw();
+	muon_ptetacut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1241,7 +1320,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_ptetamasscut_mother->GetEntries();
 	muon_ptetamasscut_mother->Scale(1.0 / nentries, "width");
-	muon_ptetamasscut_mother->Draw();
+	muon_ptetamasscut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1249,7 +1328,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_p_mother->GetEntries();
 	muon_p_mother->Scale(1.0 / nentries, "width");
-	muon_p_mother->Draw();
+	muon_p_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1257,7 +1336,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_p_bkg->GetEntries();
 	muon_p_bkg->Scale(1.0 / nentries, "width");
-	muon_p_bkg->Draw();
+	muon_p_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1265,7 +1344,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_pcut_mother->GetEntries();
 	muon_pcut_mother->Scale(1.0 / nentries, "width");
-	muon_pcut_mother->Draw();
+	muon_pcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1273,7 +1352,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_petacut_mother->GetEntries();
 	muon_petacut_mother->Scale(1.0 / nentries, "width");
-	muon_petacut_mother->Draw();
+	muon_petacut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1281,13 +1360,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = muon_petamasscut_mother->GetEntries();
 	muon_petamasscut_mother->Scale(1.0 / nentries, "width");
-	muon_petamasscut_mother->Draw();
+	muon_petamasscut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_mu_petamasscut_mother1.pdf","pdf");
 
-
+/*
 	//Scaling???
 	nentries = muon_ptvsp_mother->GetEntries();
 	muon_ptvsp_mother->Scale(1.0 / nentries, "width");
@@ -1371,11 +1450,11 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_mu_ptvseta_c3_mother1.pdf","pdf");
-
+*/
 
 	nentries = muon_eta_mother->GetEntries();
 	muon_eta_mother->Scale(1.0 / nentries, "width");
-	muon_eta_mother->Draw();
+	muon_eta_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1387,7 +1466,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pt_mother->GetEntries();
 	gamma_pt_mother->Scale(1.0 / nentries, "width");
-	gamma_pt_mother->Draw();
+	gamma_pt_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1395,7 +1474,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pt_bkg->GetEntries();
 	gamma_pt_bkg->Scale(1.0 / nentries, "width");
-	gamma_pt_bkg->Draw();
+	gamma_pt_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1403,7 +1482,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pt_c3_bkg->GetEntries();
 	gamma_pt_c3_bkg->Scale(1.0 / nentries, "width");
-	gamma_pt_c3_bkg->Draw();
+	gamma_pt_c3_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1411,7 +1490,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pt_c4_bkg->GetEntries();
 	gamma_pt_c4_bkg->Scale(1.0 / nentries, "width");
-	gamma_pt_c4_bkg->Draw();
+	gamma_pt_c4_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1419,7 +1498,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pt_c5_bkg->GetEntries();
 	gamma_pt_c5_bkg->Scale(1.0 / nentries, "width");
-	gamma_pt_c5_bkg->Draw();
+	gamma_pt_c5_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1427,7 +1506,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_ptcut_mother->GetEntries();
 	gamma_ptcut_mother->Scale(1.0 / nentries, "width");
-	gamma_ptcut_mother->Draw();
+	gamma_ptcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1435,7 +1514,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_ptetacut_mother->GetEntries();
 	gamma_ptetacut_mother->Scale(1.0 / nentries, "width");
-	gamma_ptetacut_mother->Draw();
+	gamma_ptetacut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1443,7 +1522,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_ptetamasscut_mother->GetEntries();
 	gamma_ptetamasscut_mother->Scale(1.0 / nentries, "width");
-	gamma_ptetamasscut_mother->Draw();
+	gamma_ptetamasscut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1451,7 +1530,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_ptallcut_mother->GetEntries();
 	gamma_ptallcut_mother->Scale(1.0 / nentries, "width");
-	gamma_ptallcut_mother->Draw();
+	gamma_ptallcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1459,7 +1538,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_p_mother->GetEntries();
 	gamma_p_mother->Scale(1.0 / nentries, "width");
-	gamma_p_mother->Draw();
+	gamma_p_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1467,7 +1546,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_p_bkg->GetEntries();
 	gamma_p_bkg->Scale(1.0 / nentries, "width");
-	gamma_p_bkg->Draw();
+	gamma_p_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1475,7 +1554,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_p_c3_bkg->GetEntries();
 	gamma_p_c3_bkg->Scale(1.0 / nentries, "width");
-	gamma_p_c3_bkg->Draw();
+	gamma_p_c3_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1483,7 +1562,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_p_c4_bkg->GetEntries();
 	gamma_p_c4_bkg->Scale(1.0 / nentries, "width");
-	gamma_p_c4_bkg->Draw();
+	gamma_p_c4_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1491,7 +1570,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_p_c5_bkg->GetEntries();
 	gamma_p_c5_bkg->Scale(1.0 / nentries, "width");
-	gamma_p_c5_bkg->Draw();
+	gamma_p_c5_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1499,7 +1578,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pcut_mother->GetEntries();
 	gamma_pcut_mother->Scale(1.0 / nentries, "width");
-	gamma_pcut_mother->Draw();
+	gamma_pcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1507,7 +1586,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_petacut_mother->GetEntries();
 	gamma_petacut_mother->Scale(1.0 / nentries, "width");
-	gamma_petacut_mother->Draw();
+	gamma_petacut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1515,7 +1594,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_petamasscut_mother->GetEntries();
 	gamma_petamasscut_mother->Scale(1.0 / nentries, "width");
-	gamma_petamasscut_mother->Draw();
+	gamma_petamasscut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1523,13 +1602,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = gamma_pallcut_mother->GetEntries();
 	gamma_pallcut_mother->Scale(1.0 / nentries, "width");
-	gamma_pallcut_mother->Draw();
+	gamma_pallcut_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_gamma_pallcut_mother1.pdf","pdf");
 
-
+/*
 	//Scaling???
 	nentries = gamma_ptvsp_mother->GetEntries();
 	gamma_ptvsp_mother->Scale(1.0 / nentries, "width");
@@ -1572,7 +1651,6 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Print("project54_gamma_ptvsp_c3_mother1.pdf","pdf");
 
 
-
 	nentries = gamma_ptvseta_mother->GetEntries();
 	gamma_ptvseta_mother->Scale(1.0 / nentries, "width");
 	gamma_ptvseta_mother->Draw("COLZ");
@@ -1612,11 +1690,11 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_gamma_ptvseta_c3_mother1.pdf","pdf");
-
+*/
 
 	nentries = gamma_eta_mother->GetEntries();
 	gamma_eta_mother->Scale(1.0 / nentries, "width");
-	gamma_eta_mother->Draw();
+	gamma_eta_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1641,7 +1719,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_pt->GetEntries();
 	pi_pt->Scale(1.0 / nentries, "width");
-	pi_pt->Draw();
+	pi_pt->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1649,7 +1727,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_p->GetEntries();
 	pi_p->Scale(1.0 / nentries, "width");
-	pi_p->Draw();
+	pi_p->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1657,7 +1735,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_eta->GetEntries();
 	pi_eta->Scale(1.0 / nentries, "width");
-	pi_eta->Draw();
+	pi_eta->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1665,7 +1743,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_ptcut->GetEntries();
 	pi_ptcut->Scale(1.0 / nentries, "width");
-	pi_ptcut->Draw();
+	pi_ptcut->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1673,7 +1751,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_pcut->GetEntries();
 	pi_pcut->Scale(1.0 / nentries, "width");
-	pi_pcut->Draw();
+	pi_pcut->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1681,7 +1759,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_ptmasscut->GetEntries();
 	pi_ptmasscut->Scale(1.0 / nentries, "width");
-	pi_ptmasscut->Draw();
+	pi_ptmasscut->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1689,12 +1767,12 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	nentries = pi_pmasscut->GetEntries();
 	pi_pmasscut->Scale(1.0 / nentries, "width");
-	pi_pmasscut->Draw();
+	pi_pmasscut->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pi_pmasscut1.pdf","pdf");
-
+/*
 	//Scaling???
 	nentries = pi_ptvsp->GetEntries();
 	pi_ptvsp->Scale(1.0 / nentries, "width");
@@ -1712,7 +1790,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pi_ptvsp_cuts1.pdf","pdf");
-
+*/
 	pi_number_event->Draw();
 
 	c1->Modified();
@@ -1748,10 +1826,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	gPad->SetLogy();
 
 	double Br2 = 0.0003100;
+	double sigma = 100.304 *1e12;//Pythia event cross section converted to fb from mb
+	double L = 50.0;//RUN4 luminosity
+	double total = 1e5;
 
 	nentries = eta_invmass->GetEntries();
-	eta_invmass->Scale(Br2, "width");
-	eta_invmass->Draw();
+	eta_invmass->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1759,120 +1840,171 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 
 	nentries = muon_invmass->GetEntries();
-	muon_invmass->Scale(Br2, "width");
-	muon_invmass->Draw();
+	muon_invmass->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass1.pdf","pdf");
 
 	nentries = muon_invmass_mother->GetEntries();
-	muon_invmass_mother->Scale(Br2, "width");
-	muon_invmass_mother->Draw();
+	muon_invmass_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_mother1.pdf","pdf");
 
 	nentries = eta_invmass_mother->GetEntries();
-	eta_invmass_mother->Scale(Br2, "width");
-	eta_invmass_mother->Draw();
+	eta_invmass_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_mother1.pdf","pdf");
 
 	nentries = muon_invmass_cuts_mother->GetEntries();
-	muon_invmass_cuts_mother->Scale(Br2, "width");
-	muon_invmass_cuts_mother->Draw();
+	muon_invmass_cuts_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_cuts_mother1.pdf","pdf");
 ///
 	nentries = eta_invmass_cuts_mother->GetEntries();
-	eta_invmass_cuts_mother->Scale(Br2, "width");
-	eta_invmass_cuts_mother->Draw();
+	eta_invmass_cuts_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_cuts_mother1.pdf","pdf");
 
 	nentries = muon_invmass_cuts_mother2->GetEntries();
-	muon_invmass_cuts_mother2->Scale(Br2, "width");
-	muon_invmass_cuts_mother2->Draw();
+	muon_invmass_cuts_mother2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_mother2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_cuts_mother2.pdf","pdf");
 ///
 	nentries = eta_invmass_cuts_mother2->GetEntries();
-	eta_invmass_cuts_mother2->Scale(Br2, "width");
-	eta_invmass_cuts_mother2->Draw();
+	eta_invmass_cuts_mother2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_mother2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_cuts_mother2.pdf","pdf");
 
 	nentries = muon_invmass_c3_mother->GetEntries();
-	muon_invmass_c3_mother->Scale(Br2, "width");
-	muon_invmass_c3_mother->Draw();
+	muon_invmass_c3_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_c3_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_c3_mother1.pdf","pdf");
 
 	nentries = eta_invmass_c3_mother->GetEntries();
-	eta_invmass_c3_mother->Scale(Br2, "width");
-	eta_invmass_c3_mother->Draw();
+	eta_invmass_c3_mother->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_c3_mother->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_c3_mother1.pdf","pdf");
 
+
+	nentries = muon_invmass_cuts_sigbkg->GetEntries();
+	muon_invmass_cuts_sigbkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_sigbkg->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_muoninvmass_cuts_sigbkg1.pdf","pdf");
+
+	nentries = eta_invmass_cuts_sigbkg->GetEntries();;
+	eta_invmass_cuts_sigbkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_sigbkg->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_etainvmass_cuts_sigbkg1.pdf","pdf");
+
+	nentries = muon_invmass_cuts_sigbkg2->GetEntries();
+	muon_invmass_cuts_sigbkg2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_sigbkg2->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_muoninvmass_cuts_sigbkg2.pdf","pdf");
+
+	nentries = eta_invmass_cuts_sigbkg2->GetEntries();;
+	eta_invmass_cuts_sigbkg2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_sigbkg2->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_etainvmass_cuts_sigbkg2.pdf","pdf");
+
+	nentries = muon_invmass_c3_sigbkg->GetEntries();
+	muon_invmass_c3_sigbkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_c3_sigbkg->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_muoninvmass_c3_sigbkg1.pdf","pdf");
+
+	nentries = eta_invmass_c3_sigbkg->GetEntries();
+	eta_invmass_c3_sigbkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_c3_sigbkg->Draw("h");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_etainvmass_c3_sigbkg1.pdf","pdf");
+
+
+
 	nentries = muon_invmass_cuts_bkg->GetEntries();
-	muon_invmass_cuts_bkg->Scale(Br2, "width");
-	muon_invmass_cuts_bkg->Draw();
+	muon_invmass_cuts_bkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_cuts_bkg1.pdf","pdf");
 
 	nentries = eta_invmass_cuts_bkg->GetEntries();;
-	eta_invmass_cuts_bkg->Scale(Br2, "width");
-	eta_invmass_cuts_bkg->Draw();
+	eta_invmass_cuts_bkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_cuts_bkg1.pdf","pdf");
 
 	nentries = muon_invmass_cuts_bkg2->GetEntries();
-	muon_invmass_cuts_bkg2->Scale(Br2, "width");
-	muon_invmass_cuts_bkg2->Draw();
+	muon_invmass_cuts_bkg2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_cuts_bkg2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_cuts_bkg2.pdf","pdf");
 
 	nentries = eta_invmass_cuts_bkg2->GetEntries();;
-	eta_invmass_cuts_bkg2->Scale(Br2, "width");
-	eta_invmass_cuts_bkg2->Draw();
+	eta_invmass_cuts_bkg2->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_cuts_bkg2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_etainvmass_cuts_bkg2.pdf","pdf");
 
 	nentries = muon_invmass_c3_bkg->GetEntries();
-	muon_invmass_c3_bkg->Scale(Br2, "width");
-	muon_invmass_c3_bkg->Draw();
+	muon_invmass_c3_bkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	muon_invmass_c3_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_muoninvmass_c3_bkg1.pdf","pdf");
 
 	nentries = eta_invmass_c3_bkg->GetEntries();
-	eta_invmass_c3_bkg->Scale(Br2, "width");
-	eta_invmass_c3_bkg->Draw();
+	eta_invmass_c3_bkg->Scale(Br2 * sigma * L/(2.0 * total), "width");
+	eta_invmass_c3_bkg->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1881,70 +2013,64 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	double misID = 1e-6;
 
 	nentries = pigamma_invmass->GetEntries();
-	pigamma_invmass->Scale(misID*10, "width");
-	pigamma_invmass->Draw();
+	pigamma_invmass->Scale(sigma * L/(2.0 * total), "width");
+	pigamma_invmass->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pigamma_invmass1.pdf","pdf");
 
 	nentries = pigamma_invmass_c3->GetEntries();
-	pigamma_invmass_c3->Scale(misID*10, "width");
-	pigamma_invmass_c3->Draw();
+	pigamma_invmass_c3->Scale(sigma * L/(2.0 * total), "width");
+	pigamma_invmass_c3->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pigamma_invmass_c31.pdf","pdf");
 
 	nentries = pigamma_invmass_cuts->GetEntries();
-	//pigamma_invmass_cuts->Scale(misID*nentries, "width");
-	pigamma_invmass_cuts->Scale(misID*10, "width");
-	pigamma_invmass_cuts->Draw();
+	pigamma_invmass_cuts->Scale(sigma * L/(2.0 * total), "width");
+	pigamma_invmass_cuts->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pigamma_invmass_cuts1.pdf","pdf");
 
 	nentries = pigamma_invmass_cuts2->GetEntries();
-	//pigamma_invmass_cuts->Scale(misID*nentries, "width");
-	pigamma_invmass_cuts2->Scale(misID*10, "width");
-	pigamma_invmass_cuts2->Draw();
+	pigamma_invmass_cuts2->Scale(sigma * L/(2.0 * total), "width");
+	pigamma_invmass_cuts2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pigamma_invmass_cuts2.pdf","pdf");
 
 	nentries = pi_invmass->GetEntries();
-	//pi_invmass->Scale(misID*nentries, "width");
-	pi_invmass->Scale(misID*10, "width");
-	pi_invmass->Draw();
+	pi_invmass->Scale(sigma * L/(2.0 * total), "width");
+	pi_invmass->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pi_invmass1.pdf","pdf");
 
 	nentries = pi_invmass_c3->GetEntries();
-	//pi_invmass_c3->Scale(misID*nentries, "width");
-	pi_invmass_c3->Scale(misID*10, "width");
-	pi_invmass_c3->Draw();
+	pi_invmass_c3->Scale(sigma * L/(2.0 * total), "width");
+	pi_invmass_c3->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pi_invmass_c31.pdf","pdf");
 
 	nentries = pi_invmass_cuts->GetEntries();
-	//pi_invmass_cuts->Scale(misID*nentries, "width");
-	pi_invmass_cuts->Scale(misID*10, "width");
-	pi_invmass_cuts->Draw();
+	pi_invmass_cuts->Scale(sigma * L/(2.0 * total), "width");
+	pi_invmass_cuts->Draw("h");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_pi_invmass_cuts1.pdf","pdf");
 
 	nentries = pi_invmass_cuts2->GetEntries();
-	//pi_invmass_cuts->Scale(misID*nentries, "width");
-	pi_invmass_cuts2->Scale(misID*10, "width");
-	pi_invmass_cuts2->Draw();
+	pi_invmass_cuts2->Scale(sigma * L/(2.0 * total), "width");
+	pi_invmass_cuts2->Draw("h");
 
 	c1->Modified();
 	c1->Update();
@@ -1953,19 +2079,19 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	muon_pt_bkg->SetLineColor(kYellow);
 	muon_pt_bkg->SetFillStyle(1001);
-	muon_pt_bkg->Draw();
+	muon_pt_bkg->Draw("h");
 	muon_ptcut_mother->SetLineColor(kGreen);
 	muon_ptcut_mother->SetFillStyle(1001);
-	muon_ptcut_mother->Draw("same");
+	muon_ptcut_mother->Draw("same h");
 	muon_ptetacut_mother->SetLineColor(kRed);
 	muon_ptetacut_mother->SetFillStyle(1001);
-	muon_ptetacut_mother->Draw("same");
+	muon_ptetacut_mother->Draw("same h");
 	muon_ptetamasscut_mother->SetLineColor(kMagenta);
 	muon_ptetamasscut_mother->SetFillStyle(1001);
-	muon_ptetamasscut_mother->Draw("same");
+	muon_ptetamasscut_mother->Draw("same h");
 	muon_pt_mother->SetLineColor(kBlue);
 	muon_pt_mother->SetFillStyle(1001);
-	muon_pt_mother->Draw("same");
+	muon_pt_mother->Draw("same h");
 
 	TLegend *legend3 = new TLegend(0.5,0.55,0.9,0.75);	
 	TLegendEntry *leg32 = legend3->AddEntry("muon_pt_bkg","p_{t} distribution for background","f");
@@ -1989,16 +2115,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	gamma_pt_mother->SetLineColor(kBlue);
 	gamma_pt_mother->SetFillStyle(1001);
-	gamma_pt_mother->Draw();
+	gamma_pt_mother->Draw("h");
 	gamma_ptetacut_mother->SetLineColor(kRed);
 	gamma_ptetacut_mother->SetFillStyle(1001);
-	gamma_ptetacut_mother->Draw("same");
+	gamma_ptetacut_mother->Draw("same h");
 	gamma_ptetamasscut_mother->SetLineColor(kGreen);
 	gamma_ptetamasscut_mother->SetFillStyle(1001);
-	gamma_ptetamasscut_mother->Draw("same");
+	gamma_ptetamasscut_mother->Draw("same h");
 	gamma_ptallcut_mother->SetLineColor(kCyan);
 	gamma_ptallcut_mother->SetFillStyle(1001);
-	gamma_ptallcut_mother->Draw("same");
+	gamma_ptallcut_mother->Draw("same h");
 	
 
 	TLegend *legend8 = new TLegend(0.3,0.7,0.7,0.9);	
@@ -2020,16 +2146,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	gamma_pt_bkg->SetLineColor(kBlue);
 	gamma_pt_bkg->SetFillStyle(1001);
-	gamma_pt_bkg->Draw();
+	gamma_pt_bkg->Draw("h");
 	gamma_pt_c3_bkg->SetLineColor(kRed);
 	gamma_pt_c3_bkg->SetFillStyle(1001);
-	gamma_pt_c3_bkg->Draw("same");
+	gamma_pt_c3_bkg->Draw("same h");
 	gamma_pt_c4_bkg->SetLineColor(kGreen);
 	gamma_pt_c4_bkg->SetFillStyle(1001);
-	gamma_pt_c4_bkg->Draw("same");
+	gamma_pt_c4_bkg->Draw("same h");
 	gamma_pt_c5_bkg->SetLineColor(kCyan);
 	gamma_pt_c5_bkg->SetFillStyle(1001);
-	gamma_pt_c5_bkg->Draw("same");
+	gamma_pt_c5_bkg->Draw("same h");
 	
 
 	TLegend *legend26 = new TLegend(0.5,0.5,0.9,0.7);	
@@ -2053,13 +2179,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	pi_pt->SetLineColor(kBlue);
 	pi_pt->SetFillStyle(1001);
-	pi_pt->Draw();
+	pi_pt->Draw("h");
 	pi_ptcut->SetLineColor(kRed);
 	pi_ptcut->SetFillStyle(1001);
-	pi_ptcut->Draw("same");
+	pi_ptcut->Draw("same h");
 	pi_ptmasscut->SetLineColor(kGreen);
 	pi_ptmasscut->SetFillStyle(1001);
-	pi_ptmasscut->Draw("same");
+	pi_ptmasscut->Draw("same h");
 
 	TLegend *legend4 = new TLegend(0.3,0.7,0.7,0.9);
 	TLegendEntry *leg41 = legend4->AddEntry("pi_pt","#pi^{#pm} p_{t} distribution before cuts","f");
@@ -2076,19 +2202,19 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	muon_p_bkg->SetLineColor(kYellow);
 	muon_p_bkg->SetFillStyle(1001);
-	muon_p_bkg->Draw();
+	muon_p_bkg->Draw("h");
 	muon_pcut_mother->SetLineColor(kGreen);
 	muon_pcut_mother->SetFillStyle(1001);
-	muon_pcut_mother->Draw("same");
+	muon_pcut_mother->Draw("same h");
 	muon_petacut_mother->SetLineColor(kRed);
 	muon_petacut_mother->SetFillStyle(1001);
-	muon_petacut_mother->Draw("same");
+	muon_petacut_mother->Draw("same h");
 	muon_petamasscut_mother->SetLineColor(kMagenta);
 	muon_petamasscut_mother->SetFillStyle(1001);
-	muon_petamasscut_mother->Draw("same");
+	muon_petamasscut_mother->Draw("same h");
 	muon_p_mother->SetLineColor(kBlue);
 	muon_p_mother->SetFillStyle(1001);
-	muon_p_mother->Draw("same");
+	muon_p_mother->Draw("same h");
 
 	TLegend *legend6 = new TLegend(0.3,0.7,0.7,0.9);
 	TLegendEntry *leg5 = legend6->AddEntry("muon_p_mother","p distribution before cuts (sig)","f");
@@ -2112,16 +2238,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	gamma_p_mother->SetLineColor(kBlue);
 	gamma_p_mother->SetFillStyle(1001);
-	gamma_p_mother->Draw();	
+	gamma_p_mother->Draw("h");	
 	gamma_petacut_mother->SetLineColor(kRed);
 	gamma_petacut_mother->SetFillStyle(1001);
-	gamma_petacut_mother->Draw("same");
+	gamma_petacut_mother->Draw("same h");
 	gamma_petamasscut_mother->SetLineColor(kGreen);
 	gamma_petamasscut_mother->SetFillStyle(1001);
-	gamma_petamasscut_mother->Draw("same");
+	gamma_petamasscut_mother->Draw("same h");
 	gamma_pallcut_mother->SetLineColor(kCyan);
 	gamma_pallcut_mother->SetFillStyle(1001);
-	gamma_pallcut_mother->Draw("same");
+	gamma_pallcut_mother->Draw("same h");
 	
 
 	TLegend *legend9 = new TLegend(0.3,0.7,0.7,0.9);	
@@ -2144,16 +2270,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	gamma_p_bkg->SetLineColor(kBlue);
 	gamma_p_bkg->SetFillStyle(1001);
-	gamma_p_bkg->Draw();
+	gamma_p_bkg->Draw("h");
 	gamma_p_c3_bkg->SetLineColor(kRed);
 	gamma_p_c3_bkg->SetFillStyle(1001);
-	gamma_p_c3_bkg->Draw("same");
+	gamma_p_c3_bkg->Draw("same h");
 	gamma_p_c4_bkg->SetLineColor(kGreen);
 	gamma_p_c4_bkg->SetFillStyle(1001);
-	gamma_p_c4_bkg->Draw("same");
+	gamma_p_c4_bkg->Draw("same h");
 	gamma_p_c5_bkg->SetLineColor(kCyan);
 	gamma_p_c5_bkg->SetFillStyle(1001);
-	gamma_p_c5_bkg->Draw("same");
+	gamma_p_c5_bkg->Draw("same h");
 	
 
 	TLegend *legend25 = new TLegend(0.3,0.7,0.7,0.9);	
@@ -2177,13 +2303,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	pi_p->SetLineColor(kBlue);
 	pi_p->SetFillStyle(1001);
-	pi_p->Draw();
+	pi_p->Draw("h");
 	pi_pcut->SetLineColor(kRed);
 	pi_pcut->SetFillStyle(1001);
-	pi_pcut->Draw("same");
+	pi_pcut->Draw("same h");
 	pi_pmasscut->SetLineColor(kGreen);
 	pi_pmasscut->SetFillStyle(1001);
-	pi_pmasscut->Draw("same");
+	pi_pmasscut->Draw("same h");
 
 	TLegend *legend5 = new TLegend(0.3,0.7,0.7,0.9);
 	TLegendEntry *leg51 = legend5->AddEntry("pi_p","#pi^{#pm} p distribution before cuts","f");
@@ -2203,10 +2329,10 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	eta_invmass->SetLineColor(kBlue);
 	eta_invmass->SetFillStyle(1001);
-	eta_invmass->Draw();
+	eta_invmass->Draw("h");
 	eta_invmass_mother->SetLineColor(kGreen);
 	eta_invmass_mother->SetFillStyle(1001);
-	eta_invmass_mother->Draw("same");
+	eta_invmass_mother->Draw("same h");
 
 	TLegend *legend1 = new TLegend(0.7,0.5,0.9,0.7);
 	TLegendEntry *leg1 = legend1->AddEntry("eta_invmass","#eta invariant mass (sig+bkg)","f");
@@ -2224,13 +2350,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	eta_invmass->SetLineColor(kBlue);
 	eta_invmass->SetFillStyle(1001);
-	eta_invmass->Draw();
+	eta_invmass->Draw("h");
 	eta_invmass_mother->SetLineColor(kGreen);
 	eta_invmass_mother->SetFillStyle(1001);
-	eta_invmass_mother->Draw("same");
+	eta_invmass_mother->Draw("same h");
 	pigamma_invmass->SetLineColor(kOrange);
 	pigamma_invmass->SetFillStyle(1001);
-	pigamma_invmass->Draw("same");
+	pigamma_invmass->Draw("same h");
 
 	TLegend *legend7 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg70 = legend7->AddEntry("eta_invmass","#eta invariant mass (sig+bkg)","f");
@@ -2241,7 +2367,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg71->SetFillColor(kOrange);
 	legend7->Draw("same");
 
-	eta_invmass->SetAxisRange(1e6, 1e12,"Y");
+	//eta_invmass->SetAxisRange(1e6, 1e12,"Y");
 	eta_invmass->SetTitle("Reconstructed #eta invariant mass");
 
 	c1->Modified();
@@ -2251,16 +2377,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	eta_invmass_cuts_mother->SetLineColor(kBlue);
 	eta_invmass_cuts_mother->SetFillStyle(1001);
-	eta_invmass_cuts_mother->Draw();
+	eta_invmass_cuts_mother->Draw("h");
 	eta_invmass_cuts_mother2->SetLineColor(kRed);
 	eta_invmass_cuts_mother2->SetFillStyle(1001);
-	eta_invmass_cuts_mother2->Draw("same");
+	eta_invmass_cuts_mother2->Draw("same h");
 	pigamma_invmass_cuts->SetLineColor(kGreen);
 	pigamma_invmass_cuts->SetFillStyle(1001);
-	pigamma_invmass_cuts->Draw("same");
+	pigamma_invmass_cuts->Draw("same h");
 	pigamma_invmass_cuts2->SetLineColor(kOrange);
 	pigamma_invmass_cuts2->SetFillStyle(1001);
-	pigamma_invmass_cuts2->Draw("same");
+	pigamma_invmass_cuts2->Draw("same h");
 
 	TLegend *legend17 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg170 = legend17->AddEntry("eta_invmass_cuts_mother","#eta invariant mass (sig)","f");
@@ -2273,7 +2399,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg173->SetFillColor(kOrange);
 	legend17->Draw("same");
 
-	eta_invmass_cuts_mother->SetAxisRange(1e-6, 1e2,"Y");
+	//eta_invmass_cuts_mother->SetAxisRange(1e-6, 1e2,"Y");
 	eta_invmass_cuts_mother->SetTitle("Reconstructed #eta invariant mass after all cuts");
 
 	c1->Modified();
@@ -2283,10 +2409,10 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	eta_invmass_c3_mother->SetLineColor(kBlue);
 	eta_invmass_c3_mother->SetFillStyle(1001);
-	eta_invmass_c3_mother->Draw();
+	eta_invmass_c3_mother->Draw("h");
 	pigamma_invmass_c3->SetLineColor(kRed);
 	pigamma_invmass_c3->SetFillStyle(1001);
-	pigamma_invmass_c3->Draw("same");
+	pigamma_invmass_c3->Draw("same h");
 
 	TLegend *legend18 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg180 = legend18->AddEntry("eta_invmass_c3_mother","#eta invariant mass (sig)","f");
@@ -2295,7 +2421,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg181->SetFillColor(kRed);
 	legend18->Draw("same");
 
-	eta_invmass_c3_mother->SetAxisRange(1e1, 1e7,"Y");
+	//eta_invmass_c3_mother->SetAxisRange(1e1, 1e7,"Y");
 	eta_invmass_c3_mother->SetTitle("Reconstructed #eta invariant mass after p_{t}, p and #eta cuts");
 
 	c1->Modified();
@@ -2307,13 +2433,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	muon_invmass->SetLineColor(kBlue);
 	muon_invmass->SetFillStyle(1001);
-	muon_invmass->Draw();
+	muon_invmass->Draw("h");
 	muon_invmass_mother->SetLineColor(kGreen);
 	muon_invmass_mother->SetFillStyle(1001);
-	muon_invmass_mother->Draw("same");
+	muon_invmass_mother->Draw("same h");
 	pi_invmass->SetLineColor(kOrange);
 	pi_invmass->SetFillStyle(1001);
-	pi_invmass->Draw("same");
+	pi_invmass->Draw("same h");
 
 	TLegend *legend10 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg100 = legend10->AddEntry("muon_invmass","di-muon invariant mass (sig+bkg)","f");
@@ -2324,7 +2450,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg101->SetFillColor(kOrange);
 	legend10->Draw("same");
 
-	muon_invmass->SetAxisRange(1e4, 1e10,"Y");
+	//muon_invmass->SetAxisRange(1e4, 1e10,"Y");
 	muon_invmass->SetAxisRange(0, 2,"X");
 	muon_invmass->SetTitle("Reconstructed di-muon invariant mass");
 
@@ -2335,16 +2461,16 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	muon_invmass_cuts_mother->SetLineColor(kBlue);
 	muon_invmass_cuts_mother->SetFillStyle(1001);
-	muon_invmass_cuts_mother->Draw();
+	muon_invmass_cuts_mother->Draw("h");
 	muon_invmass_cuts_mother2->SetLineColor(kRed);
 	muon_invmass_cuts_mother2->SetFillStyle(1001);
-	muon_invmass_cuts_mother2->Draw("same");
+	muon_invmass_cuts_mother2->Draw("same h");
 	pi_invmass_cuts->SetLineColor(kGreen);
 	pi_invmass_cuts->SetFillStyle(1001);
-	pi_invmass_cuts->Draw("same");
+	pi_invmass_cuts->Draw("same h");
 	pi_invmass_cuts2->SetLineColor(kOrange);
 	pi_invmass_cuts2->SetFillStyle(1001);
-	pi_invmass_cuts2->Draw("same");
+	pi_invmass_cuts2->Draw("same h");
 
 	TLegend *legend11 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg110 = legend11->AddEntry("muon_invmass_cuts_mother","di-muon invariant mass (sig)","f");
@@ -2357,7 +2483,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg113->SetFillColor(kOrange);
 	legend11->Draw("same");
 
-	muon_invmass_cuts_mother->SetAxisRange(1e-5, 1e1,"Y");
+	//muon_invmass_cuts_mother->SetAxisRange(1e-5, 1e1,"Y");
 	muon_invmass_cuts_mother->SetTitle("Reconstructed di-muon invariant mass after all cuts (sig)");
 
 	c1->Modified();
@@ -2367,10 +2493,10 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 
 	muon_invmass_c3_mother->SetLineColor(kBlue);
 	muon_invmass_c3_mother->SetFillStyle(1001);
-	muon_invmass_c3_mother->Draw();
+	muon_invmass_c3_mother->Draw("h");
 	pi_invmass_c3->SetLineColor(kRed);
 	pi_invmass_c3->SetFillStyle(1001);
-	pi_invmass_c3->Draw("same");
+	pi_invmass_c3->Draw("same h");
 
 	TLegend *legend12 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg120 = legend12->AddEntry("muon_invmass_c3_mother","di-muon invariant mass (sig)","f");
@@ -2379,7 +2505,7 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg121->SetFillColor(kRed);
 	legend12->Draw("same");
 
-	muon_invmass_c3_mother->SetAxisRange(1e1, 1e7,"Y");
+	//muon_invmass_c3_mother->SetAxisRange(1e1, 1e7,"Y");
 	muon_invmass_c3_mother->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p and #eta cuts");
 
 	c1->Modified();
@@ -2387,30 +2513,63 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Print("project54_mupi_invmass_c312.pdf","pdf");
 
 
-
-	eta_invmass_cuts_bkg->SetLineColor(kBlue);
-	eta_invmass_cuts_bkg->SetFillStyle(1001);
-	eta_invmass_cuts_bkg->Draw();
-	eta_invmass_cuts_bkg2->SetLineColor(kRed);
-	eta_invmass_cuts_bkg2->SetFillStyle(1001);
-	eta_invmass_cuts_bkg2->Draw("same");
+/*
+	eta_invmass_cuts_sigbkg->SetLineColor(kBlue);
+	eta_invmass_cuts_sigbkg->SetFillStyle(1001);
+	eta_invmass_cuts_sigbkg->Draw("h");
+	eta_invmass_cuts_sigbkg2->SetLineColor(kRed);
+	eta_invmass_cuts_sigbkg2->SetFillStyle(1001);
+	eta_invmass_cuts_sigbkg2->Draw("same h");
 	pigamma_invmass_cuts->SetLineColor(kGreen);
 	pigamma_invmass_cuts->SetFillStyle(1001);
-	pigamma_invmass_cuts->Draw("same");
+	pigamma_invmass_cuts->Draw("same h");
 	pigamma_invmass_cuts2->SetLineColor(kOrange);
 	pigamma_invmass_cuts2->SetFillStyle(1001);
-	pigamma_invmass_cuts2->Draw("same");
+	pigamma_invmass_cuts2->Draw("same h");
 
 	TLegend *legend13 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg130 = legend13->AddEntry("eta_invmass_cuts_bkg","#eta invariant mass (sig+bkg)","f");
+	TLegendEntry *leg130 = legend13->AddEntry("eta_invmass_cuts_sigbkg","#eta invariant mass (sig+bkg)","f");
   	leg130->SetFillColor(kBlue);
-	TLegendEntry *leg132 = legend13->AddEntry("eta_invmass_cuts_bkg2","#eta invariant mass including #gamma (sig+bkg)","f");
+	TLegendEntry *leg132 = legend13->AddEntry("eta_invmass_cuts_sigbkg2","#eta invariant mass including #gamma (sig+bkg)","f");
   	leg132->SetFillColor(kRed);	
 	TLegendEntry *leg131 = legend13->AddEntry("pigamma_invmass_cuts","misID 2#pi+#gamma invariant mass","f");
   	leg131->SetFillColor(kGreen);
 	TLegendEntry *leg133 = legend13->AddEntry("pigamma_invmass_cuts2","misID 2#pi+#gamma invariant mass including #gamma","f");
   	leg133->SetFillColor(kOrange);
 	legend13->Draw("same");
+
+	eta_invmass_cuts_sigbkg->SetAxisRange(1e-5, 1e2,"Y");
+	eta_invmass_cuts_sigbkg->SetTitle("Reconstructed #eta invariant mass after all cuts (sig+bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_etapigamma_invmass_cuts_sigbkg12.pdf","pdf");
+
+
+
+	eta_invmass_cuts_bkg->SetLineColor(kBlue);
+	eta_invmass_cuts_bkg->SetFillStyle(1001);
+	eta_invmass_cuts_bkg->Draw("h");
+	eta_invmass_cuts_bkg2->SetLineColor(kRed);
+	eta_invmass_cuts_bkg2->SetFillStyle(1001);
+	eta_invmass_cuts_bkg2->Draw("same h");
+	pigamma_invmass_cuts->SetLineColor(kGreen);
+	pigamma_invmass_cuts->SetFillStyle(1001);
+	pigamma_invmass_cuts->Draw("same h");
+	pigamma_invmass_cuts2->SetLineColor(kOrange);
+	pigamma_invmass_cuts2->SetFillStyle(1001);
+	pigamma_invmass_cuts2->Draw("same h");
+
+	TLegend *legend23 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg230 = legend23->AddEntry("eta_invmass_cuts_bkg","#eta invariant mass (bkg)","f");
+  	leg230->SetFillColor(kBlue);
+	TLegendEntry *leg232 = legend23->AddEntry("eta_invmass_cuts_bkg2","#eta invariant mass including #gamma (bkg)","f");
+  	leg232->SetFillColor(kRed);	
+	TLegendEntry *leg231 = legend23->AddEntry("pigamma_invmass_cuts","misID 2#pi+#gamma invariant mass","f");
+  	leg231->SetFillColor(kGreen);
+	TLegendEntry *leg233 = legend23->AddEntry("pigamma_invmass_cuts2","misID 2#pi+#gamma invariant mass including #gamma","f");
+  	leg233->SetFillColor(kOrange);
+	legend23->Draw("same");
 
 	eta_invmass_cuts_bkg->SetAxisRange(1e-5, 1e2,"Y");
 	eta_invmass_cuts_bkg->SetTitle("Reconstructed #eta invariant mass after all cuts (bkg)");
@@ -2420,45 +2579,46 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	c1->Print("project54_etapigamma_invmass_cuts_bkg12.pdf","pdf");
 
 
-	eta_invmass_c3_bkg->SetLineColor(kBlue);
-	eta_invmass_c3_bkg->SetFillStyle(1001);
-	eta_invmass_c3_bkg->Draw();
+
+	eta_invmass_c3_sigbkg->SetLineColor(kBlue);
+	eta_invmass_c3_sigbkg->SetFillStyle(1001);
+	eta_invmass_c3_sigbkg->Draw("h");
 	pigamma_invmass_c3->SetLineColor(kRed);
 	pigamma_invmass_c3->SetFillStyle(1001);
-	pigamma_invmass_c3->Draw("same");
+	pigamma_invmass_c3->Draw("same h");
 
 	TLegend *legend14 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg140 = legend14->AddEntry("eta_invmass_c3_bkg","#eta invariant mass (sig+bkg)","f");
+	TLegendEntry *leg140 = legend14->AddEntry("eta_invmass_c3_sigbkg","#eta invariant mass (sig+bkg)","f");
   	leg140->SetFillColor(kBlue);	
 	TLegendEntry *leg141 = legend14->AddEntry("pigamma_invmass_c3","misID 2#pi+#gamma invariant mass","f");
   	leg141->SetFillColor(kRed);
 	legend14->Draw("same");
 
 	//eta_invmass_c3_bkg->SetAxisRange(1e6, 1e12,"Y");
-	eta_invmass_c3_bkg->SetTitle("Reconstructed #eta invariant mass after p_{t}, p and #eta cuts (bkg)");
+	eta_invmass_c3_sigbkg->SetTitle("Reconstructed #eta invariant mass after p_{t}, p and #eta cuts (sig+bkg)");
 
 	c1->Modified();
 	c1->Update();
-	c1->Print("project54_etapigamma_invmass_c3_bkg12.pdf","pdf");
+	c1->Print("project54_etapigamma_invmass_c3_sigbkg12.pdf","pdf");*/
 
 
-	muon_invmass_cuts_bkg->SetLineColor(kBlue);
-	muon_invmass_cuts_bkg->SetFillStyle(1001);
-	muon_invmass_cuts_bkg->Draw();
-	muon_invmass_cuts_bkg2->SetLineColor(kRed);
-	muon_invmass_cuts_bkg2->SetFillStyle(1001);
-	muon_invmass_cuts_bkg2->Draw("same");
+	muon_invmass_cuts_sigbkg->SetLineColor(kBlue);
+	muon_invmass_cuts_sigbkg->SetFillStyle(1001);
+	muon_invmass_cuts_sigbkg->Draw("h");
+	muon_invmass_cuts_sigbkg2->SetLineColor(kRed);
+	muon_invmass_cuts_sigbkg2->SetFillStyle(1001);
+	muon_invmass_cuts_sigbkg2->Draw("same h");
 	pi_invmass_cuts->SetLineColor(kGreen);
 	pi_invmass_cuts->SetFillStyle(1001);
-	pi_invmass_cuts->Draw("same");
+	pi_invmass_cuts->Draw("same h");
 	pi_invmass_cuts2->SetLineColor(kOrange);
 	pi_invmass_cuts2->SetFillStyle(1001);
-	pi_invmass_cuts2->Draw("same");
+	pi_invmass_cuts2->Draw("same h");
 
 	TLegend *legend15 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg150 = legend15->AddEntry("muon_invmass_cuts_bkg","di-muon invariant mass (sig+bkg)","f");
+	TLegendEntry *leg150 = legend15->AddEntry("muon_invmass_cuts_sigbkg","di-muon invariant mass (sig+bkg)","f");
   	leg150->SetFillColor(kBlue);	
-	TLegendEntry *leg152 = legend15->AddEntry("muon_invmass_cuts_bkg2","di-muon invariant mass including #gamma (sig+bkg)","f");
+	TLegendEntry *leg152 = legend15->AddEntry("muon_invmass_cuts_sigbkg2","di-muon invariant mass including #gamma (sig+bkg)","f");
   	leg152->SetFillColor(kRed);	
 	TLegendEntry *leg151 = legend15->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
   	leg151->SetFillColor(kGreen);
@@ -2466,117 +2626,204 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
   	leg153->SetFillColor(kOrange);
 	legend15->Draw("same");
 
-	muon_invmass_cuts_bkg->SetAxisRange(1e-5, 1e1,"Y");
-	muon_invmass_cuts_bkg->SetTitle("Reconstructed di-muon invariant mass after all cuts (bkg)");
-
-	c1->Modified();
-	c1->Update();
-	c1->Print("project54_mupi_invmass_cuts_bkg12.pdf","pdf");
-
-
-	muon_invmass_c3_bkg->SetLineColor(kBlue);
-	muon_invmass_c3_bkg->SetFillStyle(1001);
-	muon_invmass_c3_bkg->Draw();
-	pi_invmass_c3->SetLineColor(kRed);
-	pi_invmass_c3->SetFillStyle(1001);
-	pi_invmass_c3->Draw("same");
-
-	TLegend *legend16 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg160 = legend16->AddEntry("muon_invmass_c3_bkg","di-muon invariant mass (sig+bkg)","f");
-  	leg160->SetFillColor(kBlue);	
-	TLegendEntry *leg161 = legend16->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
-  	leg161->SetFillColor(kRed);
-	legend16->Draw("same");
-
-	//muon_invmass_c3_bkg->SetAxisRange(1e6, 1e12,"Y");
-	muon_invmass_c3_bkg->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p and #eta cuts (bkg)");
-
-	c1->Modified();
-	c1->Update();
-	c1->Print("project54_mupi_invmass_c3_bkg12.pdf","pdf");
-
-
-
-	muon_invmass_c3_mother->SetLineColor(kBlue);
-	muon_invmass_c3_mother->SetFillStyle(1001);
-	muon_invmass_c3_mother->Draw();
-	muon_invmass_c3_bkg->SetLineColor(kGreen);
-	muon_invmass_c3_bkg->SetFillStyle(1001);
-	muon_invmass_c3_bkg->Draw("same");
-	pi_invmass_c3->SetLineColor(kRed);
-	pi_invmass_c3->SetFillStyle(1001);
-	pi_invmass_c3->Draw("same");
-
-	TLegend *legend20 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg200 = legend20->AddEntry("muon_invmass_c3_mother","di-muon invariant mass (sig)","f");
-  	leg200->SetFillColor(kBlue);	
-	TLegendEntry *leg201 = legend20->AddEntry("muon_invmass_c3_bkg","di-muon invariant mass (sig+bkg)","f");
-  	leg201->SetFillColor(kGreen);	
-	TLegendEntry *leg202 = legend20->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
-  	leg202->SetFillColor(kRed);
-	legend20->Draw("same");
-
-	muon_invmass_c3_mother->SetAxisRange(1e-5, 1e3,"Y");
-	muon_invmass_c3_mother->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p and #eta cuts (sig & bkg)");
-
-	c1->Modified();
-	c1->Update();
-	c1->Print("project54_mupi_invmass_c3_sigbkg12.pdf","pdf");
-
-
-	muon_invmass_cuts_mother->SetLineColor(kBlue);
-	muon_invmass_cuts_mother->SetFillStyle(1001);
-	muon_invmass_cuts_mother->Draw();
-	muon_invmass_cuts_bkg->SetLineColor(kGreen);
-	muon_invmass_cuts_bkg->SetFillStyle(1001);
-	muon_invmass_cuts_bkg->Draw("same");
-	pi_invmass_cuts->SetLineColor(kRed);
-	pi_invmass_cuts->SetFillStyle(1001);
-	pi_invmass_cuts->Draw("same");
-
-	TLegend *legend21 = new TLegend(0.5,0.2,0.9,0.4);
-	TLegendEntry *leg210 = legend21->AddEntry("muon_invmass_cuts_mother","di-muon invariant mass (sig)","f");
-  	leg210->SetFillColor(kBlue);	
-	TLegendEntry *leg211 = legend21->AddEntry("muon_invmass_cuts_bkg","di-muon invariant mass (sig+bkg)","f");
-  	leg211->SetFillColor(kGreen);	
-	TLegendEntry *leg212 = legend21->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
-  	leg212->SetFillColor(kRed);
-	legend21->Draw("same");
-
-	muon_invmass_cuts_mother->SetAxisRange(1e-6, 1e1,"Y");
-	muon_invmass_cuts_mother->SetTitle("Reconstructed di-muon invariant mass after all cuts (sig & bkg)");
+	//muon_invmass_cuts_sigbkg->SetAxisRange(1e-5, 1e1,"Y");
+	muon_invmass_cuts_sigbkg->SetTitle("Reconstructed di-muon invariant mass after all cuts (sig+bkg)");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_mupi_invmass_cuts_sigbkg12.pdf","pdf");
 
 
+	muon_invmass_cuts_bkg->SetLineColor(kBlue);
+	muon_invmass_cuts_bkg->SetFillStyle(1001);
+	muon_invmass_cuts_bkg->Draw("h");
+	muon_invmass_cuts_bkg2->SetLineColor(kRed);
+	muon_invmass_cuts_bkg2->SetFillStyle(1001);
+	muon_invmass_cuts_bkg2->Draw("same h");
+	pi_invmass_cuts->SetLineColor(kGreen);
+	pi_invmass_cuts->SetFillStyle(1001);
+	pi_invmass_cuts->Draw("same h");
+	pi_invmass_cuts2->SetLineColor(kOrange);
+	pi_invmass_cuts2->SetFillStyle(1001);
+	pi_invmass_cuts2->Draw("same h");
 
+	TLegend *legend27 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg270 = legend27->AddEntry("muon_invmass_cuts_bkg","di-muon invariant mass (bkg)","f");
+  	leg270->SetFillColor(kBlue);	
+	TLegendEntry *leg272 = legend27->AddEntry("muon_invmass_cuts_bkg2","di-muon invariant mass including #gamma (bkg)","f");
+  	leg272->SetFillColor(kRed);	
+	TLegendEntry *leg271 = legend27->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
+  	leg271->SetFillColor(kGreen);
+	TLegendEntry *leg273 = legend27->AddEntry("pi_invmass_cuts2","misID #pi invariant mass including #gamma","f");
+  	leg273->SetFillColor(kOrange);
+	legend27->Draw("same");
+
+	//muon_invmass_cuts_bkg->SetAxisRange(1e-5, 1e1,"Y");
+	muon_invmass_cuts_bkg->SetTitle("Reconstructed di-muon invariant mass after all cuts (bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_cuts_bkg123.pdf","pdf");
+
+
+	muon_invmass_c3_sigbkg->SetLineColor(kBlue);
+	muon_invmass_c3_sigbkg->SetFillStyle(1001);
+	muon_invmass_c3_sigbkg->Draw("h");
+	pi_invmass_c3->SetLineColor(kRed);
+	pi_invmass_c3->SetFillStyle(1001);
+	pi_invmass_c3->Draw("same h");
+
+	TLegend *legend16 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg160 = legend16->AddEntry("muon_invmass_c3_sigbkg","di-muon invariant mass (sig+bkg)","f");
+  	leg160->SetFillColor(kBlue);	
+	TLegendEntry *leg161 = legend16->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
+  	leg161->SetFillColor(kRed);
+	legend16->Draw("same");
+
+	//muon_invmass_c3_bkg->SetAxisRange(1e6, 1e12,"Y");
+	muon_invmass_c3_sigbkg->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p and #eta cuts (sig+bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_c3_sig12.pdf","pdf");
+
+
+
+	muon_invmass_c3_mother->SetLineColor(kBlue);
+	muon_invmass_c3_mother->SetFillStyle(1001);
+	muon_invmass_c3_mother->Draw("h");
+	muon_invmass_c3_sigbkg->SetLineColor(kGreen);
+	muon_invmass_c3_sigbkg->SetFillStyle(1001);
+	muon_invmass_c3_sigbkg->Draw("same h");
+	pi_invmass_c3->SetLineColor(kRed);
+	pi_invmass_c3->SetFillStyle(1001);
+	pi_invmass_c3->Draw("same h");
+
+	TLegend *legend20 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg200 = legend20->AddEntry("muon_invmass_c3_mother","di-muon invariant mass (sig)","f");
+  	leg200->SetFillColor(kBlue);	
+	TLegendEntry *leg201 = legend20->AddEntry("muon_invmass_c3_sigbkg","di-muon invariant mass (sig+bkg)","f");
+  	leg201->SetFillColor(kGreen);	
+	TLegendEntry *leg202 = legend20->AddEntry("pi_invmass_c3","misID #pi invariant mass","f");
+  	leg202->SetFillColor(kRed);
+	legend20->Draw("same");
+
+	//muon_invmass_c3_mother->SetAxisRange(1e-5, 1e3,"Y");
+	muon_invmass_c3_mother->SetTitle("Reconstructed di-muon invariant mass after p_{t}, p and #eta cuts (sig & sig+bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_c3_sig123.pdf","pdf");
+
+
+	muon_invmass_cuts_mother->SetLineColor(kBlue);
+	muon_invmass_cuts_mother->SetFillStyle(1001);
+	muon_invmass_cuts_mother->Draw("h");
+	muon_invmass_cuts_sigbkg->SetLineColor(kGreen);
+	muon_invmass_cuts_sigbkg->SetFillStyle(1001);
+	muon_invmass_cuts_sigbkg->Draw("same h");
+	pi_invmass_cuts->SetLineColor(kRed);
+	pi_invmass_cuts->SetFillStyle(1001);
+	pi_invmass_cuts->Draw("same h");
+
+	TLegend *legend21 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg210 = legend21->AddEntry("muon_invmass_cuts_mother","di-muon invariant mass (sig)","f");
+  	leg210->SetFillColor(kBlue);	
+	TLegendEntry *leg211 = legend21->AddEntry("muon_invmass_cuts_sigbkg","di-muon invariant mass (sig+bkg)","f");
+  	leg211->SetFillColor(kGreen);	
+	TLegendEntry *leg212 = legend21->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
+  	leg212->SetFillColor(kRed);
+	legend21->Draw("same");
+
+	//muon_invmass_cuts_mother->SetAxisRange(1e-6, 1e1,"Y");
+	muon_invmass_cuts_mother->SetTitle("Reconstructed di-muon invariant mass after all cuts (sig & sig+bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_cuts_sig12.pdf","pdf");
+
+
+	muon_invmass_cuts_mother->SetLineColor(kBlue);
+	muon_invmass_cuts_mother->SetFillStyle(1001);
+	muon_invmass_cuts_mother->Draw("h");
+	muon_invmass_cuts_bkg->SetLineColor(kGreen);
+	muon_invmass_cuts_bkg->SetFillStyle(1001);
+	muon_invmass_cuts_bkg->Draw("same h");
+	pi_invmass_cuts->SetLineColor(kRed);
+	pi_invmass_cuts->SetFillStyle(1001);
+	pi_invmass_cuts->Draw("same h");
+
+	TLegend *legend24 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg240 = legend24->AddEntry("muon_invmass_cuts_mother","di-muon invariant mass (sig)","f");
+  	leg240->SetFillColor(kBlue);	
+	TLegendEntry *leg241 = legend24->AddEntry("muon_invmass_cuts_bkg","di-muon invariant mass (bkg)","f");
+  	leg241->SetFillColor(kGreen);	
+	TLegendEntry *leg242 = legend24->AddEntry("pi_invmass_cuts","misID #pi invariant mass","f");
+  	leg242->SetFillColor(kRed);
+	legend24->Draw("same");
+
+	//muon_invmass_cuts_mother->SetAxisRange(1e-6, 1e1,"Y");
+	muon_invmass_cuts_mother->SetTitle("Reconstructed di-muon invariant mass after all cuts (sig & bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_cuts_bkg12.pdf","pdf");
+
+
+	muon_invmass_cuts_sigbkg2->SetLineColor(kGreen);
+	muon_invmass_cuts_sigbkg2->SetFillStyle(1001);
+	muon_invmass_cuts_sigbkg2->Draw("h");
 	muon_invmass_cuts_mother2->SetLineColor(kBlue);
 	muon_invmass_cuts_mother2->SetFillStyle(1001);
-	muon_invmass_cuts_mother2->Draw();
-	muon_invmass_cuts_bkg2->SetLineColor(kGreen);
-	muon_invmass_cuts_bkg2->SetFillStyle(1001);
-	muon_invmass_cuts_bkg2->Draw("same");
+	muon_invmass_cuts_mother2->Draw("same h");
 	pi_invmass_cuts2->SetLineColor(kRed);
 	pi_invmass_cuts2->SetFillStyle(1001);
-	pi_invmass_cuts2->Draw("same");
+	pi_invmass_cuts2->Draw("same h");
 
 	TLegend *legend22 = new TLegend(0.5,0.2,0.9,0.4);
 	TLegendEntry *leg220 = legend22->AddEntry("muon_invmass_cuts_mother2","di-muon invariant mass (sig)","f");
   	leg220->SetFillColor(kBlue);	
-	TLegendEntry *leg221 = legend22->AddEntry("muon_invmass_cuts_bkg2","di-muon invariant mass (sig+bkg)","f");
+	TLegendEntry *leg221 = legend22->AddEntry("muon_invmass_cuts_sigbkg2","di-muon invariant mass (sig+bkg)","f");
   	leg221->SetFillColor(kGreen);	
 	TLegendEntry *leg222 = legend22->AddEntry("pi_invmass_cuts2","misID #pi invariant mass","f");
   	leg222->SetFillColor(kRed);
 	legend22->Draw("same");
 
-	muon_invmass_cuts_mother2->SetAxisRange(1e-6, 1e1,"Y");
-	muon_invmass_cuts_mother2->SetTitle("Reconstructed di-muon invariant mass after all cuts including #gamma (sig & bkg)");
+	//muon_invmass_cuts_sigbkg2->SetAxisRange(1e-6, 1e1,"Y");
+	muon_invmass_cuts_sigbkg2->SetTitle("Reconstructed di-muon invariant mass after all cuts including #gamma (sig & sig+bkg)");
 
 	c1->Modified();
 	c1->Update();
 	c1->Print("project54_mupi_invmass_cuts2_sigbkg12.pdf","pdf");
+
+
+	muon_invmass_cuts_bkg2->SetLineColor(kGreen);
+	muon_invmass_cuts_bkg2->SetFillStyle(1001);
+	muon_invmass_cuts_bkg2->Draw("h");
+	muon_invmass_cuts_mother2->SetLineColor(kBlue);
+	muon_invmass_cuts_mother2->SetFillStyle(1001);
+	muon_invmass_cuts_mother2->Draw("same h");
+	pi_invmass_cuts2->SetLineColor(kRed);
+	pi_invmass_cuts2->SetFillStyle(1001);
+	pi_invmass_cuts2->Draw("same h");
+
+	TLegend *legend28 = new TLegend(0.5,0.2,0.9,0.4);
+	TLegendEntry *leg280 = legend28->AddEntry("muon_invmass_cuts_mother2","di-muon invariant mass (sig)","f");
+  	leg280->SetFillColor(kBlue);	
+	TLegendEntry *leg281 = legend28->AddEntry("muon_invmass_cuts_bkg2","di-muon invariant mass (bkg)","f");
+  	leg281->SetFillColor(kGreen);	
+	TLegendEntry *leg282 = legend28->AddEntry("pi_invmass_cuts2","misID #pi invariant mass","f");
+  	leg282->SetFillColor(kRed);
+	legend28->Draw("same");
+
+	//muon_invmass_cuts_bkg2->SetAxisRange(1e-6, 1e1,"Y");
+	muon_invmass_cuts_bkg2->SetTitle("Reconstructed di-muon invariant mass after all cuts including #gamma (sig & bkg)");
+
+	c1->Modified();
+	c1->Update();
+	c1->Print("project54_mupi_invmass_cuts2_bkg12.pdf","pdf");
+
+
 
 	std::cout<<"Parent ID of background photons that pass the cuts: "<<std::endl;
 	for(int i=1;i<=2000;i++){
@@ -2649,12 +2896,13 @@ std::cout<<"Total number of entries T3: "<<nentries<<std::endl;
 	file_out->Close();	
 //std::cout<<"here1b"<<std::endl;
 //std::cout<<"here2"<<std::endl;
-        file_in->Close();
+        //file_in->Close();
 	//delete file_out;
 //std::cout<<"here3"<<std::endl;
 	fclose(file_out1);
 	fclose(file_out2);
-	//fclose(file_out3);
+	fclose(file_out3);
+	file.close();
 	delete v;
 	delete vn;
 	delete vp;

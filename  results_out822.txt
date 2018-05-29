@@ -1,0 +1,6 @@
+Table showing signal significance of signal muons passing various cuts: 
+gamma(pt cut)  gamma(p cut)  S(mu cuts(pt+p+eta)+mass)  S(gamma cuts(pt+p+eta))   B(mu cuts(pt+p+eta)+mass)  B(gamma cuts(pt+p+eta))   misID(mu cuts(pt+p+eta)+mass)  misID(gamma cuts(pt+p+eta))   S/sqrt(B+misID)(mu cuts(pt+p+eta)+mass)  S/sqrt(B+misID)(gamma cuts(pt+p+eta))  
+Signal entries (mu cuts + mass cut): 68778 
+SM Background entries (mu cuts + mass cut): 69441 
+Background entries (mu cuts + mass cut): 7721240 
+MisID pion entries (mu cuts + mass cut): 3049 

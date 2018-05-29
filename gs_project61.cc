@@ -10,7 +10,7 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8/SigmaHiggs.h"
 #include "cmath"
-#include "Pythia8Plugins/HepMC2.h"
+//#include "Pythia8Plugins/HepMC2.h"
 #include <vector>
 
 #include "TH1.h"
@@ -206,10 +206,11 @@ int main() {
 	//Open R-data file
 	TFile  *file_in = new TFile("rdata.txt", "READ");
 
-	HepMC::Pythia8ToHepMC ToHepMC;
+	//HepMC::Pythia8ToHepMC ToHepMC;
 
     	// Specify file where HepMC events will be stored.
-    	HepMC::IO_GenEvent ascii_io("gs_project61.dat", std::ios::out);
+    	//HepMC::IO_GenEvent ascii_io("/disk/moose/general/user72/gs_project61.dat", std::ios::out);
+	//HepMC::IO_GenEvent ascii_io("gs_project61.dat", std::ios::out);
 
 	// Generator. Process selection. LHC initialization. Histogram.
     	Pythia pythia0, pythia1;
@@ -228,21 +229,32 @@ int main() {
 	//Set eta to decay 
 	pythia0.readString("221:onMode = on");
 
+	double epsilon2 = 1e-11;//kinetic mixing coupling
+	double massA = 0.27;//dark photon mass
+	double width = Gamma_A(epsilon2, massA);//calculating the width of the dark photon
+	//stringstream widthString;
+	//widthString << width;
+	//pythia1.readString("32:mWidth=" + widthString.str());
+
 	//Set the features of the second pythia instance to force the eta to decay via A' and a gamma where the A' decays into a di-muon pair. 
 	//The features of A' (this case is Z'0) are determined: its mass and width
-	pythia1.readString("32:m0=0.27");
-
-	double epsilon2 = 1e-11;
-	double massA = 0.27;
-	double width = Gamma_A(epsilon2, massA);
-	pythia1.readString("32:mWidth=width");
+	pythia1.particleData.m0(32, massA);
+	pythia1.particleData.mMin(32, 0);
+	pythia1.particleData.mWidth(32, width);
 /*
 	pythia1.readString("221:onMode = off");
-	pythia1.readString("221:onIfMatch = 22 13 -13");*/
+	pythia1.readString("221:onIfMatch = 22 13 -13");
 	pythia1.readString("221:onMode = off");
 	pythia1.readString("221:onIfMatch = 22 32");
 	pythia1.readString("32:onMode = off");
-	pythia1.readString("32:onIfMatch = 13 -13");
+	pythia1.readString("32:onIfMatch = 13 -13");*/
+
+	pythia1.readString("32:isResonance = false");
+	pythia1.readString("ParticleDecays:FSRinDecays = off");
+	//pythia1.particleData.FSRinDecays("off");
+
+	pythia1.readString("221:oneChannel = 1 1 0 32 22");
+	pythia1.readString("32:oneChannel = 1 1 0 13 -13");
 
 	//Initilise for p (2212) and  p (2212) collisins at 13 TeV
     	//initialization of LHC environment
@@ -261,6 +273,7 @@ int main() {
 	pythia1.init();
 
 	// Set up the ROOT TFile and TTree.
+	//TFile *file = TFile::Open("/disk/moose/general/user72/gs_project61.root","recreate");
 	TFile *file = TFile::Open("gs_project61.root","recreate");
 
 	//Create event
@@ -313,7 +326,7 @@ int main() {
 	TBranch *mother22 = T2->Branch("mother2", &mother2_var);
 	TBranch *motherid12 = T2->Branch("motherid1", &motherid1_var);
 	TBranch *motherid22 = T2->Branch("motherid2", &motherid2_var);
-
+/*
 	//Creat TTree for misID pions
 	TTree *T3 = new TTree("T3","ev1 Tree");
 
@@ -328,7 +341,7 @@ int main() {
 	TBranch *mother23 = T3->Branch("mother2", &mother2_var);
 	TBranch *motherid13 = T3->Branch("motherid1", &motherid1_var);
 	TBranch *motherid23 = T3->Branch("motherid2", &motherid2_var);
-
+*/
 	//How many events shall we generate?
     	Long64_t nEvents=10;
 
@@ -357,7 +370,7 @@ int main() {
 			if(pythia0.event[i].isFinal() && ((pythia0.event[i].id() == 13) || (pythia0.event[i].id() == -13))){
 
 				mu_antimu_number++;
-
+/*
 				index_var = iEvent;
 				id_var = pythia0.event[i].id();
 				energy_var = pythia0.event[i].e();
@@ -371,13 +384,13 @@ int main() {
 				motherid2_var = pythia0.event[pythia0.event[i].mother2()].id();
 
 				T2->Fill();
-
+*/
 			}
 
 			if (pythia0.event[i].id() == 22){
 
 				gamma_number++;
-
+/*
 				index_var = iEvent;
 				id_var = pythia0.event[i].id();
 				energy_var = pythia0.event[i].e();
@@ -392,14 +405,14 @@ int main() {
 
 				T2->Fill();
 				T3->Fill();
-
+*/
 			}
 
 			//saving the pions from the event onto a separate tree with energy as if they were identified as muons
 			if (pythia0.event[i].isFinal() && ((pythia0.event[i].id() == 211) || (pythia0.event[i].id() == -211))){
 
 				pi_number++;
-
+/*
 				//adding pi to T3
 				index_var = iEvent;
 				id_var = pythia0.event[i].id();
@@ -417,7 +430,7 @@ int main() {
 				motherid2_var = pythia0.event[pythia0.event[i].mother2()].id();
 
 				T3->Fill();
-
+*/
 			}
 
 			//check if particle is eta
@@ -457,12 +470,12 @@ int main() {
 			if(i==x){
 
 				pythia1.event.reset(); 
-				pythia1.event.append(pythia0.event[v[x]].id(), 23, 0, 0, 0, 0, 0, 0, pythia0.event[v[x]].p(), pythia0.event[v[x]].m()); 
+				pythia1.event.append(pythia0.event[v[x]].id(), 22, 0, 0, 0, 0, 0, 0, pythia0.event[v[x]].p(), pythia0.event[v[x]].m()); 
 
 				//Generate one event. Skip if error.
 				if (!pythia1.next()) continue;
 
-				//if (i < 2) {pythia1.info.list(); pythia1.event.list();}
+				if (i < 2) {pythia1.info.list(); pythia1.event.list();}
 
 				Double_t E = 0.0;
 				Double_t px = 0.0;
@@ -484,10 +497,26 @@ int main() {
 						px_var = pythia1.event[j].px();
 						py_var = pythia1.event[j].py();
 						pz_var = pythia1.event[j].pz();
-						mother1_var = pythia1.event[j].mother1();
-						mother2_var = pythia1.event[j].mother2();
-						motherid1_var = pythia1.event[pythia1.event[j].mother1()].id();
-						motherid2_var = pythia1.event[pythia1.event[j].mother2()].id();
+
+						if((pythia1.event[j].id() == 13) || (pythia1.event[j].id() == -13)){
+
+							//mu_invmass -> Fill(pythia1.event[j].m());
+							++mu_antimu_number;
+
+							//Saving the eta as the mother particle instead of A'
+							mother1_var = pythia1.event[pythia1.event[j].mother1()].mother1();
+							mother2_var = pythia1.event[pythia1.event[j].mother2()].mother2();
+							motherid1_var = pythia1.event[pythia1.event[pythia1.event[j].mother1()].mother1()].id();
+							motherid2_var = pythia1.event[pythia1.event[pythia1.event[j].mother2()].mother2()].id();
+
+
+						}
+						else{
+							mother1_var = pythia1.event[j].mother1();
+							mother2_var = pythia1.event[j].mother2();
+							motherid1_var = pythia1.event[pythia1.event[j].mother1()].id();
+							motherid2_var = pythia1.event[pythia1.event[j].mother2()].id();
+						}
 
 						T2->Fill();
 
@@ -499,15 +528,15 @@ int main() {
 						if(pythia1.event[j].id() == 13){p1 = pythia1.event[j].p();}
 						else if(pythia1.event[j].id() == -13){p2 = pythia1.event[j].p();}
 
-						if((pythia1.event[j].id() == 13) || (pythia1.event[j].id() == -13)){
-
-							//mu_invmass -> Fill(pythia1.event[j].m());
+						
+						/*if(pythia1.event[j].id() == 32){
 							++mu_antimu_number;
-
+							p1 = pythia1.event[j].p();
 						}
 						else if(pythia1.event[j].id() == 22){
 							++gamma_number;
-						}
+							p2 = pythia1.event[j].p();
+						}*/
 
 					}
 
@@ -520,7 +549,7 @@ int main() {
 				mu_invmass -> Fill(inv_mass2);
 
 			}
-			else{
+			/*else{
 
 				double m = pythia0.event[v[i]].daughterList().size();
 				for (Long64_t j = 0; j < m; ++j) {
@@ -546,7 +575,7 @@ int main() {
 
 				}
 
-			}
+			}*/
 
 		}
 
@@ -566,6 +595,8 @@ int main() {
 	T1->Write();
 	T2->Print();
 	T2->Write();
+
+std::cout<<"A' width: "<<width<<std::endl;
 
 	file->Write();
 	delete file;

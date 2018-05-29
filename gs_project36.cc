@@ -40,7 +40,7 @@ int main() {
 	HepMC::Pythia8ToHepMC ToHepMC;
 
     	// Specify file where HepMC events will be stored.
-    	HepMC::IO_GenEvent ascii_io("gs_project36.dat", std::ios::out);
+    	HepMC::IO_GenEvent ascii_io("/disk/moose/general/user72/gs_project36.dat", std::ios::out);
 
 	// Generator. Process selection. LHC initialization. Histogram.
     	Pythia pythia0, pythia1;
@@ -79,7 +79,7 @@ int main() {
 	pythia1.init();
 
 	// Set up the ROOT TFile and TTree.
-	TFile *file = TFile::Open("gs_project36.root","recreate");
+	TFile *file = TFile::Open("/disk/moose/general/user72/gs_project36.root","recreate");
 
 	//Create event
 	Event *event = &pythia0.event;
@@ -375,6 +375,8 @@ int main() {
 	T1->Write();
 	T2->Print();
 	T2->Write();
+	T3->Print();
+	T3->Write();
 
 	file->Write();
 	delete file;

@@ -311,6 +311,8 @@ int main() {
 						py = py + py_var;
 						pz = pz + pz_var;
 
+						if(pythia1.event[j].id() == 22){T3->Fill();}
+
 					}
 
 				}
@@ -339,6 +341,10 @@ int main() {
 
 					T2->Fill();
 
+					if((pythia0.event[pythia0.event[v[i]].daughterList()[j]].id() == 22) || (pythia0.event[pythia0.event[v[i]].daughterList()[j]].id() == 211) || (pythia0.event[i].id() == -211)){
+						T3->Fill();
+					}
+
 				}
 
 			}
@@ -358,6 +364,8 @@ int main() {
 	T1->Write();
 	T2->Print();
 	T2->Write();
+	T3->Print();
+	T3->Write();
 
 	file->Write();
 	delete file;

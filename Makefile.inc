@@ -1,16 +1,13 @@
 # PYTHIA configuration file.
-# Generated on Fri Oct 6 17:34:24 BST 2017 with the user supplied options:
-# --with-root=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_84/ROOT/6.06.02/x86_64-slc6-gcc49-opt/
-# --with-fastjet3=/home/nkw/gs2015/fastjet
-# --with-evtgen-include=/home/nkw/gs2015/evtgen/1.5.0/
-# --with-evtgen-lib=/home/nkw/gs2015/evtgen/1.5.0/lib
-# --with-hepmc2=/home/nkw/gs2015/HepMC-2.06.08
+# Generated on Thu Feb 22 15:01:58 GMT 2018 with the user supplied options:
+# --prefix=/home/user72/pythia
+# --with-root=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/ROOT/6.12.04/x86_64-slc6-gcc62-opt
 
 # Install directory prefixes.
-PREFIX_BIN=/home/nkw/pythia8230/bin
-PREFIX_INCLUDE=/home/nkw/pythia8230/include
-PREFIX_LIB=/home/nkw/pythia8230/lib
-PREFIX_SHARE=/home/nkw/pythia8230/share/Pythia8
+PREFIX_BIN=/home/user72/pythia/bin
+PREFIX_INCLUDE=/home/user72/pythia/include
+PREFIX_LIB=/home/user72/pythia/lib
+PREFIX_SHARE=/home/user72/pythia/share/Pythia8
 
 # Compilation flags (see ./configure --help for further documentation).
 ENABLE_SHARED=false
@@ -21,22 +18,22 @@ CXX_SONAME=-Wl,-soname,
 LIB_SUFFIX=.so
 
 # EVTGEN configuration.
-EVTGEN_USE=true
+EVTGEN_USE=false
 EVTGEN_BIN=
-EVTGEN_INCLUDE=/home/nkw/gs2015/evtgen/1.5.0/
-EVTGEN_LIB=/home/nkw/gs2015/evtgen/1.5.0/lib
+EVTGEN_INCLUDE=./
+EVTGEN_LIB=./
 
 # FASTJET3 configuration.
-FASTJET3_USE=true
-FASTJET3_BIN=/home/nkw/gs2015/fastjet/bin/
-FASTJET3_INCLUDE=/home/nkw/gs2015/fastjet/include
-FASTJET3_LIB=/home/nkw/gs2015/fastjet/lib
+FASTJET3_USE=false
+FASTJET3_BIN=
+FASTJET3_INCLUDE=./
+FASTJET3_LIB=./
 
 # HEPMC2 configuration.
-HEPMC2_USE=true
-HEPMC2_BIN=/home/nkw/gs2015/HepMC-2.06.08/bin/
-HEPMC2_INCLUDE=/home/nkw/gs2015/HepMC-2.06.08/include
-HEPMC2_LIB=/home/nkw/gs2015/HepMC-2.06.08/lib
+HEPMC2_USE=false
+HEPMC2_BIN=
+HEPMC2_INCLUDE=./
+HEPMC2_LIB=./
 
 # HEPMC3 configuration.
 HEPMC3_USE=false
@@ -70,9 +67,9 @@ PROMC_LIB=./
 
 # ROOT configuration.
 ROOT_USE=true
-ROOT_BIN=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_84/ROOT/6.06.02/x86_64-slc6-gcc49-opt//bin/
-ROOT_INCLUDE=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_84/ROOT/6.06.02/x86_64-slc6-gcc49-opt//include
-ROOT_LIB=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_84/ROOT/6.06.02/x86_64-slc6-gcc49-opt//lib
+ROOT_BIN=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/ROOT/6.12.04/x86_64-slc6-gcc62-opt/bin/
+ROOT_INCLUDE=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/ROOT/6.12.04/x86_64-slc6-gcc62-opt/include
+ROOT_LIB=/cvmfs/lhcb.cern.ch/lib/lcg/releases/LCG_92/ROOT/6.12.04/x86_64-slc6-gcc62-opt/lib
 
 # GZIP configuration.
 GZIP_USE=false
